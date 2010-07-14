@@ -67,8 +67,6 @@ def main(sniffer_cls=Sniffer, test_args=(), progname=sys.argv[0], args=sys.argv[
     except KeyboardInterrupt:
         print "Good bye."
     except Exception:
-        import traceback
-        traceback.print_exc()
         return sys.exit(1)
     return sys.exit(0)
 

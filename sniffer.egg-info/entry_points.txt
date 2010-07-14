@@ -1,0 +1,3 @@
+[console_scripts]
+sniffer = sniffer:main
+

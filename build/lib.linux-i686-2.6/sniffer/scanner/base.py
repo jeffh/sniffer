@@ -168,7 +168,7 @@ class PollingScanner(BaseScanner):
         Returns True if the file has been modified since last seen.
         Will return False if the file has not been seen before.
         """
-        if self._is_new(filepath):
+        if self.is_new(filepath):
             return False
         mtime = self._get_modified_time(filepath)
         return self._watched_files[filepath] < mtime
@@ -226,12 +226,12 @@ Supported libraries are:
                     if not self.is_valid_type(fpath):
                         continue
                     files_seen.append(fpath)
-                    if self._requires_new_modtime(fpath):
-                        self._watch_file(fpath, trigger)
+                    if self.requires_new_modtime(fpath):
+                        self.watch_file(fpath, trigger)
                         changed = True
             files_seen = set(files_seen)
             for f in self._watched_files.keys():
                 if f not in files_seen:
-                    self._unwatch_file(f, trigger)
+                    self.unwatch_file(f, trigger)
                     changed = True
         return changed
