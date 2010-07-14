@@ -21,7 +21,7 @@ class FSEventsScanner(object):
         
     def loop(self, sleep_time=None):
         self.log("Library of choice: MacFSEvents")
-        self._trigger('init')
+        self.trigger_init()
         observer = self._generate_observer()
         # observer.start() # separate thread
         observer.run() # blocking
@@ -40,8 +40,8 @@ class FSEventsScanner(object):
         if not self.is_valid_type(event.name):
             return
         if event.mask & (fsevents.IN_MODIFY):
-            self.trigger('modified', event.name)
+            self.trigger_modified(event.name)
         if event.mask & fsevents.IN_CREATE:
-            self.trigger('created', event.name)
+            self.trigger_created(event.name)
         if event.mask & fsevents.IN_DELETE:
-            self.trigger('deleted', event.name)
+            self.trigger_deleted(event.name)

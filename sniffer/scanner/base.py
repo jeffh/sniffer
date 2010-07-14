@@ -22,7 +22,35 @@ class BaseScanner(object):
         self._events = {}
         for e in self.ALL_EVENTS:
             self._events[e] = []
+        self._watched_files = {}
 
+    def trigger_modified(self, filepath):
+        """Triggers modified event if the given filepath mod time is newer."""
+        mod_time = self._get_modified_time(filepath)
+        if mod_time > self._watched_files.get(filepath, 0):
+            self._trigger('modified', filepath)
+            self._watched_files[filepath] = mod_time
+
+    def trigger_created(self, filepath):
+        """Triggers created event if file exists."""
+        if os.path.exists(filepath):
+            self._trigger('created', filepath)
+
+    def trigger_deleted(self, filepath):
+        """Triggers deleted event if the flie doesn't exist."""
+        if not os.path.exist(filepath):
+            self._trigger('deleted', filepath)
+
+    def trigger_init(self):
+        """Triggers initialization event."""
+        self._trigger('init')
+    
+    def _get_modified_time(self, filepath):
+        """Returns the modified type for the given filepath or None on failure"""
+        if not os.path.isfile(filepath):
+            return None
+        return os.stat(filepath).st_mtime
+    
     def loop(self, sleep_time=0.5, callback=None):
         """Runs a blocking loop."""
         raise NotImplemented()
@@ -66,7 +94,7 @@ class BaseScanner(object):
         self._logger.write(s+'\n')
         self._logger.flush()
 
-    def trigger(self, event_name, *args, **kwargs):
+    def _trigger(self, event_name, *args, **kwargs):
         """
         Triggers a given event with the following *args and **kwargs parameters.
         """
@@ -134,12 +162,6 @@ class PollingScanner(BaseScanner):
         self._watched_files = {}
         self._running = False
 
-    def _get_modified_time(self, filepath):
-        """Returns the modified type for the given filepath or None on failure"""
-        if not os.path.isfile(filepath):
-            return None
-        return os.stat(filepath).st_mtime
-
     def _watch_file(self, filepath, trigger_event=True):
         """Adds the file's modified time into its internal watchlist."""
         try:
@@ -149,9 +171,9 @@ class PollingScanner(BaseScanner):
             return # didn't happen
         if trigger_event:
             if is_new:
-                self.trigger('created', filepath)
+                self.trigger_created(filepath)
             else:
-                self.trigger('modified', filepath)
+                self.trigger_modified(filepath)
 
     def _unwatch_file(self, filepath, trigger_event=True):
         """
@@ -160,7 +182,7 @@ class PollingScanner(BaseScanner):
         if filepath not in self._watched_files:
             return
         if trigger_event:
-            self.trigger('deleted', filepath)
+            self.trigger_deleted(filepath)
         del self._watched_files[filepath]
 
     def _is_modified(self, filepath):
@@ -197,7 +219,7 @@ Supported libraries are:
 """)
         self._running = True
         self._scan(trigger=False)
-        self.trigger('init')
+        self.trigger_init()
         while self._running:
             self._scan()
             if callable(callback):

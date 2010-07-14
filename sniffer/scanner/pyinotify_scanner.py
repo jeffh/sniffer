@@ -7,18 +7,19 @@ class EventHandler(pyinotify.ProcessEvent):
     def __init__(self, scanner):
         self._scanner = scanner
 
-    def _process(self, event_type, filepath):
-        if self._scanner.is_valid_type(filepath):
-            self._scanner.trigger(event_type, filepath)
-
     def process_IN_CREATE(self, event):
-        self._process('created', event.pathname)
+        if self._scanner.is_valid_type(event.pathname):
+            self._scanner.trigger_created(event.pathname)
 
     def process_IN_DELETE(self, event):
-        self._process('deleted', event.pathname)
+        if self._scanner.is_valid_type(event.pathname):
+            self._scanner.trigger_deleted(event.pathname)
 
     def process_IN_MODIFY(self, event):
-        self._process('modified', event.pathname)
+        #self._process('modified', event.pathname)
+        if self._scanner.is_valid_type(event.pathname):
+            self._scanner.trigger_modified(event.pathname)
+
 
 class PyINotifyScanner(BaseScanner):
     """
@@ -40,12 +41,13 @@ class PyINotifyScanner(BaseScanner):
         notifier = pyinotify.Notifier(self._watcher, handler)
         mask = pyinotify.IN_DELETE | pyinotify.IN_CREATE | pyinotify.IN_MODIFY
         for path in self.paths:
-            self._watcher.add_watch(path, mask, rec=True)
+            self._watcher.add_watch(path, mask, rec=True, auto_add=True,
+                                    exclude_filter=self.is_valid_type)
         
         return notifier
 
     def loop(self, sleep_time=None, callback=None):
-        self.trigger('init')
+        self.trigger_init()
         try:
             self._notifier.loop(callback)
         except KeyboardInterrupt:

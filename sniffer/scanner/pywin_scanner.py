@@ -59,15 +59,15 @@ class PyWinScanner(BaseScanner):
                     continue
                 action = ACTIONS.get(action, "unknown")
                 if action == 'Created':
-                    self.trigger('created', fullpath)
+                    self.trigger_created(fullpath)
                 elif action in ('Updated', 'Renamed to'):
-                    self.trigger('modified', fullpath)
+                    self.trigger_modified(fullpath)
                 elif action == 'Deleted':
-                    self.trigger('deleted', fullpath)
+                    self.trigger_deleted(fullpath)
         
     def loop(self, sleep_time=None):
         self.log("Library of choice: PyWin32 (eww)")
-        self.trigger('init')
+        self.trigger_init()
         self._running = True
         while self._running:
             self.step()
