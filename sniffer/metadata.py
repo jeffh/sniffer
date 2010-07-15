@@ -10,4 +10,4 @@ __copyright__ = "Copyright 2010, Jeff Hui"
 __credits__ = ["Jeff Hui"]
 
 __license__ = "MIT"
-__version__ = "0.1.1"
+__version__ = "0.1.2"

@@ -1,6 +1,10 @@
 ChangeLog
 =========
 
+0.1.2
+-----
+ - Fixed modified event from being triggered multiple times when using third-party libraries
+
 0.1.1
 -----
  - Added traceback for exceptions caught.
