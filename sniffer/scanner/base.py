@@ -38,7 +38,7 @@ class BaseScanner(object):
 
     def trigger_deleted(self, filepath):
         """Triggers deleted event if the flie doesn't exist."""
-        if not os.path.exist(filepath):
+        if not os.path.exists(filepath):
             self._trigger('deleted', filepath)
 
     def trigger_init(self):
