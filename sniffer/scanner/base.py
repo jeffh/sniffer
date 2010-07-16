@@ -108,7 +108,7 @@ class BaseScanner(object):
         The filepath can be assumed to be a file (not a directory).
         """
         if self._validator is not None:
-            return self._validator(filepath, self.path)
+            return self._validator(filepath)
         if filepath.endswith('.py') and not os.path.basename(filepath).startswith('.'):
             return True
         return False
