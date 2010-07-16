@@ -1,6 +1,11 @@
 ChangeLog
 =========
 
+0.1.3
+-----
+ - Fixed bug in file_validator function not running.
+ - Fixed type-o (I can't believe I missed it before the last release)
+
 0.1.2
 -----
  - Fixed modified event from being triggered multiple times when using third-party libraries
