@@ -94,10 +94,9 @@ class Sniffer(object):
         Runs the unit test framework. Can be overridden to run anything.
         Returns True on passing and False on failure.
         """
-        # import here instead of on top incase that:
-        #  - The module is missing
-        #  - Incase nose library is not wanted (ie - another test tool
-        #    overrides this method).
+        # import here instead of on top:
+        # - To force a module reload to resolve this bug until Nose fixes it:
+        #   http://github.com/gfxmonk/autonose/issues#issue/13
         try:
             import nose
             arguments = [sys.argv[0]] + list(self.test_args)

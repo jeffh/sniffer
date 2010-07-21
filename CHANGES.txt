@@ -1,6 +1,12 @@
 ChangeLog
 =========
 
+0.1.4
+-----
+ - Cleaned up unused imports
+ - sniffer/__init__.py no longer executes main() if invoked from python directly
+ - Fixed bug with PollingScanner failing to invoke file modified event.
+
 0.1.3
 -----
  - Fixed bug in file_validator function not running.
