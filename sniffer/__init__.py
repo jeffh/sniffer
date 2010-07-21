@@ -26,5 +26,4 @@ from scanner import Scanner
 from runner import Sniffer
 from main import main, run
 
-if __name__ == '__main__':
-    main()
+__all__ = ['Scanner', 'Sniffer', 'main', 'run']
