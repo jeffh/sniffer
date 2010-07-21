@@ -11,6 +11,7 @@ setup(
     url='http://github.com/jeffh/sniffer/',
     requires=[
         'termstyle',
+        'nose',
     ],
     entry_points = {
         'console_scripts': ['sniffer = sniffer:main'],
