@@ -164,16 +164,16 @@ class PollingScanner(BaseScanner):
 
     def _watch_file(self, filepath, trigger_event=True):
         """Adds the file's modified time into its internal watchlist."""
-        try:
-            is_new = filepath not in self._watched_files
-            self._watched_files[filepath] = self._get_modified_time(filepath)
-        except OSError:
-            return # didn't happen
+        is_new = filepath not in self._watched_files
         if trigger_event:
             if is_new:
                 self.trigger_created(filepath)
             else:
                 self.trigger_modified(filepath)
+        try:
+            self._watched_files[filepath] = self._get_modified_time(filepath)
+        except OSError:
+            return # didn't happen
 
     def _unwatch_file(self, filepath, trigger_event=True):
         """
@@ -218,8 +218,8 @@ Supported libraries are:
   - MacFSEvents (OSX Leopard)
 """)
         self._running = True
-        self._scan(trigger=False)
         self.trigger_init()
+        self._scan(trigger=False) # put after the trigger
         while self._running:
             self._scan()
             if callable(callback):

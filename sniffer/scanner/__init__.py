@@ -6,7 +6,6 @@ It provides a polling technique which is an OS-independent and uses no third-par
 libraries at the cost of performance. The polling technique constantly walks through
 the directory tree to see which files changed, calling os.stat on the files.
 """
-import os
 from base import PollingScanner
 
 __all__ = ['Scanner']
@@ -25,6 +24,6 @@ def _import(module, cls):
     except ImportError:
         pass
 
-_import('pyinotify_scanner', 'PyINotifyScanner') # linux
 _import('pywin_scanner', 'PyWinScanner') # windows
 _import('fsevents_scanner', 'FSEventsScanner') # osx
+_import('pyinotify_scanner', 'PyINotifyScanner') # linux
