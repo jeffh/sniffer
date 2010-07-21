@@ -15,7 +15,6 @@ Usage
 
 To install::
 
-  pip install nose
   pip install sniffer
 
 Simply run ``sniffer`` in your project directory.
