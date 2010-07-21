@@ -5,7 +5,6 @@ from optparse import OptionParser
 from scanner import Scanner
 from runner import Sniffer
 from metadata import __version__
-import os
 import sys
 
 __all__ = ['run', 'main']
