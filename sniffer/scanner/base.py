@@ -211,11 +211,11 @@ class PollingScanner(BaseScanner):
         self.log("""
 No supported libraries found: using polling-method.
 
-You may want to install a third-party library for performance benefits.
+You may want to install a third-party library so I don't eat CPU.
 Supported libraries are:
   - pyinotify (Linux)
   - pywin32 (Windows)
-  - MacFSEvents (OSX Leopard)
+  - MacFSEvents (OSX)
 """)
         self._running = True
         self.trigger_init()
