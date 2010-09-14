@@ -1,13 +1,15 @@
 """
-Scanner that relies on the FSEvents (OSX) library.
+Scanner that relies on the MacFSEvents (OSX) library.
 
-This is done through MacFSEvents
+This is an OS-specific implementation that eliminates the constant polling of the
+directory tree by hooking into OSX's IO events.
 """
+from base import BaseScanner
 import os
 import fsevents
 import time
 
-class FSEventsScanner(object):
+class FSEventsScanner(BaseScanner):
     """
     This works with MacFSEvents to hook into OSX's file watching mechanisms.
     """
@@ -22,12 +24,18 @@ class FSEventsScanner(object):
     def loop(self, sleep_time=None):
         self.log("Library of choice: MacFSEvents")
         self.trigger_init()
-        observer = self._generate_observer()
-        # observer.start() # separate thread
-        observer.run() # blocking
+        self._observer = self._generate_observer()
+        # using observer.run() doesn't let us catch the keyboard interrupt
+        self._observer.start() # separate thread
+        try:
+            while 1:
+                time.sleep(60) # simulate blocking
+        except (KeyboardInterrupt, OSError, IOError):
+            self.stop()
+        #observer.run() # blocking
 
     def stop(self):
-        observer.stop()
+        self._observer.stop()
 
 #    def step(self):
 #        observer = self._generate_observer()
