@@ -1,5 +1,10 @@
 ChangeLog
 =========
+0.1.5
+-----
+ - Got a macbook pro, so I can test the OSX-specific implementation.
+ - In OSX, fixed bug where you cannot keyboard interrupt when using the MacFSEvents library.
+ - Fix OSX Scanner class to inherit from BaseScanner (aka, it works now)
 
 0.1.4
 -----
