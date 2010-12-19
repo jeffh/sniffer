@@ -13,11 +13,20 @@ def get_files(exts=('py',), dirname=None):
             if f.split('.')[-1].lower() not in exts:
                 continue
             yield os.path.join(root, f)
+            
+class Wrapper(object):
+    def __init__(self, func, api_type):
+        self.scent_api_type = api_type
+        self.func = func
+        
+        if not callable(func):
+            raise TypeError("Given object is not callable.")
+        
+    def __call__(self, *args, **kwargs):
+        return self.func(*args, **kwargs)
 
 def file_validator(func):
-    func.scent_api_type = 'file_validator'
-    return func
+    return Wrapper(func, api_type='file_validator')
     
 def runnable(func):
-    func.scent_api_type = 'runnable'
-    return func
+    return Wrapper(func, api_type='runnable')
