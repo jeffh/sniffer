@@ -42,7 +42,7 @@ class ScentModule(object):
         
     @property
     def fg_pass(self):
-        return getattr(self.mod, 'pass_fg_color', termstyle.white)
+        return getattr(self.mod, 'pass_fg_color', termstyle.black)
     @property
     def bg_pass(self):
         return getattr(self.mod, 'pass_bg_color', termstyle.bg_green)
