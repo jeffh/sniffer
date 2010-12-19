@@ -138,7 +138,7 @@ class ScentSniffer(Sniffer):
             self.fail_colors['bg'] = self.scent.bg_fail
         
     def refresh_scent(self, filepath):
-        if filepath == self.scent.filename:
+        if self.scent and filepath == self.scent.filename:
             print "Reloaded Scent:", filepath
             for s in self._scanners:
                 self.unobserve_scanner(s)
