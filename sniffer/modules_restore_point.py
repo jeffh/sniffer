@@ -2,6 +2,7 @@ import sys
 
 __all__ = ['ModulesRestorePoint']
 
+# Really only deletes modules that didn't appear in the restore point.
 class ModulesRestorePoint(object):
     def __init__(self, sys_modules=sys.modules):
         self._saved_modules = None
