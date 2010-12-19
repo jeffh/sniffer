@@ -74,13 +74,14 @@ class Sniffer(object):
             scanner.observe('deleted',  echo("callback - deleted  %(file)s"))
         self._scanners.append(scanner)
 
-    def clear_on_run(self):
+    def clear_on_run(self, prefix="Running Tests:"):
         """Clears console before running the tests."""
         if platform.system() == 'Windows':
             os.system('cls')
         else:
             os.system('clear')
-        print "Running Tests:"
+        if prefix:
+            print prefix
 
     def _stop(self):
         """Calls stop() to all scanner in an attempt to quit."""
@@ -144,27 +145,40 @@ class ScentSniffer(Sniffer):
                 self.unobserve_scanner(s)
             self.scent = self.scent.reload()
             self.update_from_scent()
-            
-    def unobserver_scanner(self, scanner):
+            for s in self._scanners:
+                self.scent_observe_scanner(s)
+                
+    def unobserve_scanner(self, scanner):
         for v in self.scent.validators:
+            if self.debug:
+                print "Removed", repr(v)
             scanner.remove_validator(v)
-    
-    def observe_scanner(self, scanner):
+            
+    def scent_observe_scanner(self, scanner):
         if self.scent:
             for v in self.scent.validators:
+                if self.debug:
+                    print "Added", repr(v)
                 scanner.add_validator(v)
-        scanner.observe('created', self.refresh_scent)    
+    
+    def observe_scanner(self, scanner):            
+        scanner.observe('created', self.refresh_scent)
         scanner.observe('modified', self.refresh_scent)
+        self.scent_observe_scanner(scanner)
         return super(ScentSniffer, self).observe_scanner(scanner)
+        
+    def clear_on_run(self):
+        super(ScentSniffer, self).clear_on_run(None)
         
     def run(self):
         """
         Runs the CWD's scent file.
         """
         if not self.scent or len(self.scent.runners) == 0:
-            print "Could not find 'scent.py', running nose."
+            print "Did not find 'scent.py', running nose:"
             return super(ScentSniffer, self).run()
-        else:    
+        else:
+            print "Using scent:"
             arguments = [sys.argv[0]] + list(self.test_args)
             return self.scent.run(arguments)
         return True
