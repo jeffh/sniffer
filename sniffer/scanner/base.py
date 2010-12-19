@@ -14,7 +14,7 @@ class BaseScanner(object):
     """
     ALL_EVENTS = ('created', 'modified', 'deleted', 'init')
     def __init__(self, paths, logger=None):
-        self._validators = [] 
+        self._validators = []
         self._paths = [os.path.abspath(p) for p in paths]
         self._logger = logger
         self._events = {}
@@ -28,7 +28,7 @@ class BaseScanner(object):
         self._validators.append(func)
         
     def remove_validator(self, func):
-        self._validations.remove(func)
+        self._validators.remove(func)
 
     def trigger_modified(self, filepath):
         """Triggers modified event if the given filepath mod time is newer."""

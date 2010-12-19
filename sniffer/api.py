@@ -18,9 +18,14 @@ class Wrapper(object):
     def __init__(self, func, api_type):
         self.scent_api_type = api_type
         self.func = func
+        self.__name__ = func.__name__
+        self.__doc__ = func.__doc__
         
         if not callable(func):
             raise TypeError("Given object is not callable.")
+    
+    def __repr__(self):
+        return "<%s %s>" % (self.scent_api_type, self.func.__name__)
         
     def __call__(self, *args, **kwargs):
         return self.func(*args, **kwargs)
