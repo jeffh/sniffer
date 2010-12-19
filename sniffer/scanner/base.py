@@ -4,8 +4,6 @@ Scanner class.
 Provides a polling technique which is an OS-independent and uses no third-party
 libraries at the cost of performance. The polling technique constantly walks through
 the directory tree to see which files changed, calling os.stat on the files.
-
-Using Scanner.inject, custom third-party mixin classes can be used.
 """
 import os
 import time
