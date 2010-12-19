@@ -13,14 +13,19 @@ class BaseScanner(object):
     Provides basic hooking and logging mechanisms.
     """
     ALL_EVENTS = ('created', 'modified', 'deleted', 'init')
-    def __init__(self, paths, file_validator=None, logger=None):
-        self._validator = file_validator
+    def __init__(self, paths, logger=None):
+        self._validators = [] 
         self._paths = [os.path.abspath(p) for p in paths]
         self._logger = logger
         self._events = {}
         for e in self.ALL_EVENTS:
             self._events[e] = []
         self._watched_files = {}
+        
+    def add_validator(self, func):
+        if not callable(func):
+            raise TypeError("Param should return boolean and accept a filename str.")
+        self._validators.append(func)
 
     def trigger_modified(self, filepath):
         """Triggers modified event if the given filepath mod time is newer."""
@@ -99,17 +104,22 @@ class BaseScanner(object):
         self.log('event: %s' % event_name, *args)
         for f in self._events[event_name]:
             f(*args, **kwargs)
+            
+    def default_validator(self, filepath):
+        return filepath.endswith('.py') and not os.path.basename(filepath).startswith('.')
 
     def is_valid_type(self, filepath):
         """
         Returns True if the given filepath is a valid watchable filetype.
         The filepath can be assumed to be a file (not a directory).
         """
-        if self._validator is not None:
-            return self._validator(filepath)
-        if filepath.endswith('.py') and not os.path.basename(filepath).startswith('.'):
-            return True
-        return False
+        validators = self._validators
+        if len(validators) == 0:
+            validators = [self.default_validator]
+        for validator in validators:
+            if not validator(filepath):
+                return False
+        return True
 
     def _modify_event(self, event_name, method, func):
         """
