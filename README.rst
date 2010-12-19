@@ -3,6 +3,8 @@ Overview
 
 ``sniffer`` is a autotest tool for Python_ using the nosetest_ library.
 
+**NEW**: sniffer can now be customize to run anything, see 'Advanced Usage'.
+
 Sniffer will automatically re-run tests if your code changes. And with another third-party
 library (see below), the CPU usage of file system monitoring is reduced in comparison
 to pure-python solutions. However, sniffer will still work without any of those libraries.
@@ -31,9 +33,6 @@ third-party library can help fix the problem. The library is dependent on your o
  - If you use **Windows**, you'll need to install pywin32_.
  - If you use **Mac OS X** 10.5+ (Leopard), you'll need to install MacFSEvents_.
 
-**As a word of warning**, Windows and OSX libraries are *untested* as of now. This is because I
-haven't gotten around to testing in Windows, and I don't have a Mac :(.
-
 .. _nose: http://code.google.com/p/python-nose/
 .. _easy_install: http://pypi.python.org/pypi/setuptools
 .. _pip: http://pypi.python.org/pypi/pip
@@ -42,6 +41,45 @@ haven't gotten around to testing in Windows, and I don't have a Mac :(.
 .. _pywin32: http://sourceforge.net/projects/pywin32/
 .. _MacFSEvents: http://pypi.python.org/pypi/MacFSEvents/0.2.1
 
+Advanced Usage
+------
+
+Don't want to run nose? You can do whatever you really want. Create a scent.py file in
+your current working directory. Here's an example of what you can do so far::
+
+  from sniffer.api import * # import the really small API
+  import os, termstyle
+  
+  # you can customize the pass/fail colors like this
+  pass_fg_color = termstyle.green
+  pass_bg_color = termstyle.bg_default
+  fail_fg_color = termstyle.red
+  fail_bg_color = termstyle.bg_default
+  
+  # this gets invoked on every file that gets changed in the directory. Return 
+  # True to invoke any runnable functions, False otherwise.
+  #
+  # This fires runnables only if files ending with .py extension and not prefixed
+  # with a period.
+  @file_validator
+  def py_files(filename):
+      return filename.endswith('.py') and not os.path.basename(filename).startswith('.')
+  
+  # This gets invoked for verification. This is ideal for running tests of some sort.
+  # For anything you want to get constantly reloaded, do an import in the function.
+  #
+  # sys.argv[0] and any arguments passed via -x prefix will be sent to this function as
+  # it's arguments. The function should return logically True if the validation passed
+  # and logicially False if it fails.
+  #
+  # This example simply runs nose.
+  @runnable
+  def execute_nose(*args):
+      import nose
+      return nose.run(argv=list(args))
+
+And that's it. Nothing too fancy shmanshe. You can have multiple file_validator and
+runnable decorators if you want.
 
 Other Uses
 ==========
@@ -77,22 +115,26 @@ Creating the scanner is simple::
 
 Here we pass a tuple of paths to monitor. Now we need to get notification when events occur::
 
-  # when file is created
-  scanner.observe('created', lambda path: print "Created", path)
+  # when file is created (function accepts the filepath string)
+  scanner.observe('created', file_created_func)
 
-  # when file is modified
-  scanner.observe('modified', lambda path: print "Modified", path)
+  # when file is modified (function accepts the filepath string)
+  scanner.observe('modified', file_modified_func)
 
-  # when file is deleted
-  scanner.observe('deleted', lambda path: print "Deleted", path)
+  # when file is deleted (function accepts the filepath string)
+  scanner.observe('deleted', file_deleted_func)
 
+  def init_func(filename):
+      print "Scanner started listening"
   # when scanner.loop() is called
-  scanner.observe('init',    lambda: print "Scanner started listening.")
+  scanner.observe('init', init_func)
 
 In addition, we can use the same function to listen to multiple events::
 
   # listen to multiple events
-  scanner.observe(('created', 'modified', 'deleted'), lambda path: "Triggered:", path)
+  def output_file(filename):
+      print "Triggered", filename
+  scanner.observe(('created', 'modified', 'deleted'), output_file)
 
 Finally, we start our blocking loop::
 
@@ -101,10 +143,6 @@ Finally, we start our blocking loop::
 
 Current Issues
 ==============
-
-Being relatively new, there are bound to be bugs. Most notable is third-party libraries.
-Only the Linux install was tested (being in Ubuntu), so Windows & OSX implementations were
-done *without testing*. Patches are welcomed though :)
 
 For linux, there is an exception that is sometimes thrown when terminating.
 
