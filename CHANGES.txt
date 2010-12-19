@@ -1,5 +1,13 @@
 ChangeLog
 =========
+0.2.0
+-----
+ - New: Sniffer can run custom code per project (eg - use a nose alternative).
+        See README for usage.
+ - Updated termstyle dependency to python-termstyle (dependency was renamed).
+ - Scanners can use multiple validator functions.
+ - Psyco is optional, and will be used if present.
+
 0.1.5
 -----
  - Got a macbook pro, so I can test the OSX-specific implementation.
