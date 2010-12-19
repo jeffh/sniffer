@@ -26,6 +26,9 @@ class BaseScanner(object):
         if not callable(func):
             raise TypeError("Param should return boolean and accept a filename str.")
         self._validators.append(func)
+        
+    def remove_validator(self, func):
+        self._validations.remove(func)
 
     def trigger_modified(self, filepath):
         """Triggers modified event if the given filepath mod time is newer."""

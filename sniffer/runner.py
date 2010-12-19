@@ -1,9 +1,10 @@
 from modules_restore_point import ModulesRestorePoint
 from functools import wraps
-from termstyle import bg_red, bg_green
+from termstyle import bg_red, bg_green, white
 import platform
 import os
 import sys
+import scent_picker
 
 __all__ = ['Sniffer']
 
@@ -17,10 +18,11 @@ class Sniffer(object):
     """
     Handles the execution of the sniffer. The interface that main.run expects is:
 
-    ``__init__(test_args, clear, debug)``
-
+    ``set_up(test_args, clear, debug)``
+    
       ``test_args`` The arguments to pass to the test runner.
-      ``clear``     Boolean. Set to True if we should clear console before running the tests.
+      ``clear``     Boolean. Set to True if we should clear console before running
+                    the tests.
       ``debug``     Boolean. Set to True if we want to print debugging information.
 
     ``observe_scanner(scanner)``
@@ -29,12 +31,25 @@ class Sniffer(object):
                     attached, which then calls self.run(). The run method should return
                     True on passing and False on failure.
     """
-    def __init__(self, test_args=(), clear=True, debug=False):
-        self.test_args = test_args
+    def __init__(self):
         self.modules = ModulesRestorePoint()
-        self.debug, self.clear = debug, clear
         self._scanners = []
+        self.pass_colors = {'fg': white, 'bg': bg_green}
+        self.fail_colors = {'fg': white, 'bg': bg_red}
+        self.set_up()
+        
+    def set_up(self, test_args=(), clear=True, debug=False):
+        """
+        Sets properties right before calling run.
 
+          ``test_args`` The arguments to pass to the test runner.
+          ``clear``     Boolean. Set to True if we should clear console before running
+                        the tests.
+          ``debug``     Boolean. Set to True if we want to print debugging information.
+        """
+        self.test_args = test_args
+        self.debug, self.clear = debug, clear
+        
     def absorb_args(self, func):
         """
         Calls a function without any arguments. The returned caller function
@@ -76,9 +91,9 @@ class Sniffer(object):
         """Calls self.run() and wraps for errors."""
         try:
             if self.run():
-                print bg_green("In good standing")
+                print self.pass_colors['bg'](self.pass_colors['fg']("In good standing"))
             else:
-                print bg_red("Failed - Back to work!")
+                print self.fail_colors['bg'](self.fail_colors['fg']("Failed - Back to work!"))
         except StandardError:
             import traceback
             traceback.print_exc()
@@ -107,3 +122,49 @@ class Sniffer(object):
             print
             raise
 
+class ScentSniffer(Sniffer):
+    """Runs arbitrary python code in the cwd's scent.py file."""
+    def __init__(self, cwd=None, scent="scent.py"):
+        self.cwd = cwd or os.getcwd()
+        self.scent = scent_picker.exec_from_dir(self.cwd, scent)
+        super(ScentSniffer, self).__init__()
+        self.update_from_scent()
+        
+    def update_from_scent(self):
+        if self.scent:
+            self.pass_colors['fg'] = self.scent.fg_pass
+            self.pass_colors['bg'] = self.scent.bg_pass
+            self.fail_colors['fg'] = self.scent.fg_fail
+            self.fail_colors['bg'] = self.scent.bg_fail
+        
+    def refresh_scent(self, filepath):
+        if filepath == self.scent.filename:
+            print "Reloaded Scent:", filepath
+            for s in self._scanners:
+                self.unobserve_scanner(s)
+            self.scent = self.scent.reload()
+            self.update_from_scent()
+            
+    def unobserver_scanner(self, scanner):
+        for v in self.scent.validators:
+            scanner.remove_validator(v)
+    
+    def observe_scanner(self, scanner):
+        if self.scent:
+            for v in self.scent.validators:
+                scanner.add_validator(v)
+        scanner.observe('created', self.refresh_scent)    
+        scanner.observe('modified', self.refresh_scent)
+        return super(ScentSniffer, self).observe_scanner(scanner)
+        
+    def run(self):
+        """
+        Runs the CWD's scent file.
+        """
+        if not self.scent or len(self.scent.runners) == 0:
+            print "Could not find 'scent.py', running nose."
+            return super(ScentSniffer, self).run()
+        else:    
+            arguments = [sys.argv[0]] + list(self.test_args)
+            return self.scent.run(arguments)
+        return True

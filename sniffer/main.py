@@ -3,18 +3,18 @@ Main runners. Bootloads Sniffer class.
 """
 from optparse import OptionParser
 from scanner import Scanner
-from runner import Sniffer
+from runner import Sniffer, ScentSniffer
 from metadata import __version__
 import sys
 
 __all__ = ['run', 'main']
 
-def run(sniffer_cls=Sniffer, wait_time=0.5, clear=True, args=(), debug=False):
+def run(sniffer_instance=None, wait_time=0.5, clear=True, args=(), debug=False):
     """
     Runs the auto tester loop. Internally, the runner instanciates the sniffer_cls and
     scanner class.
 
-    ``sniffer_cls`` The class to run. Usually this is set to but a subclass of scanner.
+    ``sniffer_instance`` The class to run. Usually this is set to but a subclass of scanner.
                     Defaults to Sniffer. Sniffer class documentation for more information.
     ``wait_time``   The time, in seconds, to wait between polls. This is dependent on
                     the underlying scanner implementation. OS-specific libraries may choose
@@ -25,20 +25,26 @@ def run(sniffer_cls=Sniffer, wait_time=0.5, clear=True, args=(), debug=False):
     ``debug``       Boolean. Sets the scanner and sniffer in debug mode, printing more internal
                     information. Defaults to False (and should usually be False).
     """
+    if sniffer_instance is None:
+        sniffer_instance = Sniffer()
+
     if debug:
         scanner = Scanner(('.',), logger=sys.stdout)
     else:
         scanner = Scanner(('.',))
-    sniffer = sniffer_cls(tuple(args), clear, debug)
-    sniffer.observe_scanner(scanner)
+    #sniffer = sniffer_cls(tuple(args), clear, debug)
+    sniffer_instance.set_up(tuple(args), clear, debug)
+    
+    sniffer_instance.observe_scanner(scanner)
     scanner.loop(wait_time)
 
-def main(sniffer_cls=Sniffer, test_args=(), progname=sys.argv[0], args=sys.argv[1:]):
+def main(sniffer_instance=None, test_args=(), progname=sys.argv[0], args=sys.argv[1:]):
     """
     Runs the program. This is used when you want to run this program standalone.
 
-    ``sniffer_cls`` A class (usually subclassed of Sniffer) that hooks into the scanner and
-                    handles running the test framework. Defaults to Sniffer class.
+    ``sniffer_instance`` A class (usually subclassed of Sniffer) that hooks into the
+                    scanner and handles running the test framework. Defaults to
+                    Sniffer instance.
     ``test_args``   This function normally extracts args from ``--test-arg ARG`` command. A
                     preset argument list can be passed. Defaults to an empty tuple.
     ``program``     Program name. Defaults to sys.argv[0].
@@ -57,12 +63,13 @@ def main(sniffer_cls=Sniffer, test_args=(), progname=sys.argv[0], args=sys.argv[
                       "arguments.)")
     (options, args) = parser.parse_args(args)
     test_args = test_args + tuple(options.test_args)
+    
     if options.debug:
         print "Options:", options
         print "Test Args:", test_args
     try:
         print "Starting watch..."
-        run(sniffer_cls, options.wait_time, options.clear_on_run, test_args, options.debug)
+        run(sniffer_instance, options.wait_time, options.clear_on_run, test_args, options.debug)
     except KeyboardInterrupt:
         print "Good bye."
     except Exception:
@@ -72,4 +79,9 @@ def main(sniffer_cls=Sniffer, test_args=(), progname=sys.argv[0], args=sys.argv[
     return sys.exit(0)
 
 if __name__ == '__main__':
-    main()
+    try:
+        import psyco
+        psyco.full()
+    except ImportError:
+        pass
+    main(sniffer_instance=ScentSniffer())
