@@ -10,7 +10,7 @@ setup(
     author_email=__author_email__,
     url='http://github.com/jeffh/sniffer/',
     requires=[
-        'termstyle',
+        'python-termstyle',
         'nose',
     ],
     entry_points = {

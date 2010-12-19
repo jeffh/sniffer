@@ -1,10 +1,8 @@
-termstyle==0.1.5
+python-termstyle==0.1.5
 
 # supports nose out of the box
-# we don't include it by default incase
-# someone wants to write it to run with another
-# unit testing framework.
-#nose==0.11.4
+# for reasonable defaults, we use nose.
+nose==0.11.4
 
 # Linux
 #pyinotify==0.9.0
