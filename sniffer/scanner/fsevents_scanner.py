@@ -13,6 +13,10 @@ class FSEventsScanner(BaseScanner):
     """
     This works with MacFSEvents to hook into OSX's file watching mechanisms.
     """
+    def __init__(self, *args, **kwargs):
+        super(FSEventsScanner, self).__init__(*args, **kwargs)
+        self._observer = self._generate_observer()
+    
     def _generate_observer(self):
         observer = fsevents.Observer()
         # use file_events=True to mimic other implementations
@@ -24,7 +28,6 @@ class FSEventsScanner(BaseScanner):
     def loop(self, sleep_time=None):
         self.log("Library of choice: MacFSEvents")
         self.trigger_init()
-        self._observer = self._generate_observer()
         # using observer.run() doesn't let us catch the keyboard interrupt
         self._observer.start() # separate thread
         try:
