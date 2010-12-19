@@ -19,13 +19,26 @@ class ScentModule(object):
         print self.validators
         
     def reload(self):
-        return load_file(self.filename)
+        try:
+            return load_file(self.filename)
+        except Exception:
+            import traceback
+            traceback.print_exc()
+            print
+            print "Still using previously valid Scent."
+            return self
     
     def run(self, args):
-        for r in self.runners:
-            if not r(*args):
-                return False
-        return True
+        try:
+            for r in self.runners:
+                if not r(*args):
+                    return False
+            return True
+        except Exception:
+            import traceback
+            traceback.print_exc()
+            print
+            return False
         
     @property
     def fg_pass(self):
