@@ -95,7 +95,8 @@ The property, ``test_args``, are arguments gathered through ``--config=blah`` an
 configuration options. You should perform you imports inside the function instead of outside,
 to let the class reload the test framework (and reduce possibilities of multiple-run bugs).
 
-After subclassing, set sniffer_cls parameter to your custom class when calling run or main.
+After subclassing, set sniffer_instance parameter to your custom class when calling run
+or main.
 
 Using the FileSystem monitoring code
 ------------------------------------

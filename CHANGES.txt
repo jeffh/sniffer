@@ -1,5 +1,10 @@
 ChangeLog
 =========
+0.2.2
+-----
+ - Fixed (hopefully): now installs correctly through pip/easy_install.
+ - Updated README to use sniffer_instance instead of sniffer_cls.
+
 0.2.1
 -----
  - Scanner avoids watching repository files (.git, .hg, .svn, .cvs) because a rapid

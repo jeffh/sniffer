@@ -1,5 +1,9 @@
 from setuptools import setup, find_packages
-from sniffer import __version__, __author__, __author_email__
+
+# will fail to install via pip/easy_install
+#from sniffer.metadata import __version__, __author__, __author_email__
+
+__version__, __author__, __author_email__ = "0.2.2", "Jeff Hui", "contrib@jeffhui.net"
 
 setup(
     name='sniffer',
@@ -9,7 +13,7 @@ setup(
     author=__author__,
     author_email=__author_email__,
     url='http://github.com/jeffh/sniffer/',
-    requires=[
+    install_requires=[
         'python-termstyle',
         'nose',
     ],
