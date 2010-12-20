@@ -120,7 +120,7 @@ class BaseScanner(object):
         This excludes repository directories because they cause some exceptions occationally.
         """
         filepath = set(filepath.replace('\\', '/').split('/'))
-        for p in ('.git', '.hg', '.svn', '.cvs'):
+        for p in ('.git', '.hg', '.svn', '.cvs', '.bzr'):
             if p in filepath:
                 return False
         return True

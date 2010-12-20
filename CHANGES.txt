@@ -1,5 +1,10 @@
 ChangeLog
 =========
+0.2.1
+-----
+ - Scanner avoids watching repository files (.git, .hg, .svn, .cvs) because a rapid
+   change in files (tmp files?) causes exceptions to be thrown every now and then.
+
 0.2.0
 -----
  - New: Sniffer can run custom code per project (eg - use a nose alternative).
