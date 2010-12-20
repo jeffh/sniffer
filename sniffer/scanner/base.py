@@ -109,16 +109,31 @@ class BaseScanner(object):
             f(*args, **kwargs)
             
     def default_validator(self, filepath):
+        """
+        The default validator only accepts files ending in .py
+        (and not prefixed by a period).
+        """
         return filepath.endswith('.py') and not os.path.basename(filepath).startswith('.')
+    
+    def not_repo(self, filepath):
+        """
+        This excludes repository directories because they cause some exceptions occationally.
+        """
+        filepath = set(filepath.replace('\\', '/').split('/'))
+        for p in ('.git', '.hg', '.svn', '.cvs'):
+            if p in filepath:
+                return False
+        return True
 
     def is_valid_type(self, filepath):
         """
         Returns True if the given filepath is a valid watchable filetype.
         The filepath can be assumed to be a file (not a directory).
         """
-        validators = self._validators
-        if len(validators) == 0:
-            validators = [self.default_validator]
+        if len(self._validators) == 0:
+            validators = [self.default_validator, self.not_repo]
+        else:
+            validators = self._validators + [self.not_repo]
         for validator in validators:
             if not validator(filepath):
                 return False
