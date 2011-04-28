@@ -26,7 +26,7 @@ def run(sniffer_instance=None, wait_time=0.5, clear=True, args=(), debug=False):
                     information. Defaults to False (and should usually be False).
     """
     if sniffer_instance is None:
-        sniffer_instance = Sniffer()
+        sniffer_instance = ScentSniffer()
 
     if debug:
         scanner = Scanner(('.',), logger=sys.stdout)
@@ -84,4 +84,4 @@ if __name__ == '__main__':
         psyco.full()
     except ImportError:
         pass
-    main(sniffer_instance=ScentSniffer())
+    main()
