@@ -13,7 +13,7 @@ class BaseScanner(object):
     Provides basic hooking and logging mechanisms.
     """
     ALL_EVENTS = ('created', 'modified', 'deleted', 'init')
-    def __init__(self, paths, logger=None):
+    def __init__(self, paths, logger=None, *args, **kwargs):
         self._validators = []
         self._paths = [os.path.abspath(p) for p in paths]
         self._logger = logger
@@ -187,6 +187,7 @@ class PollingScanner(BaseScanner):
         super(PollingScanner, self).__init__(*args, **kwargs)
         self._watched_files = {}
         self._running = False
+        self._warn = kwargs.get('warn_missing_lib', True)
 
     def _watch_file(self, filepath, trigger_event=True):
         """Adds the file's modified time into its internal watchlist."""
@@ -234,15 +235,18 @@ class PollingScanner(BaseScanner):
         Goes into a blocking IO loop. If polling is used, the sleep_time is
         the interval, in seconds, between polls.
         """
-        self.log("""
-No supported libraries found: using polling-method.
-
-You may want to install a third-party library so I don't eat CPU.
+        
+        self.log("No supported libraries found: using polling-method.")
+        if self._warn:
+            print """
+You should install a third-party library so I don't eat CPU.
 Supported libraries are:
   - pyinotify (Linux)
   - pywin32 (Windows)
   - MacFSEvents (OSX)
-""")
+  
+Use pip or easy_install and install one of those libraries above.
+"""
         self._running = True
         self.trigger_init()
         self._scan(trigger=False) # put after the trigger

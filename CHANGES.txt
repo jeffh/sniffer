@@ -1,5 +1,10 @@
 ChangeLog
 =========
+0.2.3
+-----
+ - Fixed bug where scent.py file wasn't being picked up (wrong Sniffer class was loaded).
+ - Warning about not using third party libraries is now default without debug flag.
+
 0.2.2
 -----
  - Fixed (hopefully): now installs correctly through pip/easy_install.
