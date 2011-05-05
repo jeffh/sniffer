@@ -26,13 +26,14 @@ arguments: ``-x--with-doctest`` or ``-x--config``.
 
 The problem with autonose_, is that the autodetect can be slow to detect changes. This is due
 to the pure python implementation - manually walking through the file system to see what's
-changed. Although the default install of sniffer shares the same problem, installing a
+changed [#]_. Although the default install of sniffer shares the same problem, installing a
 third-party library can help fix the problem. The library is dependent on your operating system:
 
  - If you use **Linux**, you'll need to install pyinotify_.
  - If you use **Windows**, you'll need to install pywin32_.
  - If you use **Mac OS X** 10.5+ (Leopard), you'll need to install MacFSEvents_.
-
+ 
+.. [#] This has been resolved in subsequent autonose versions, using watchdog.
 .. _nose: http://code.google.com/p/python-nose/
 .. _easy_install: http://pypi.python.org/pypi/setuptools
 .. _pip: http://pypi.python.org/pypi/pip
@@ -97,50 +98,6 @@ to let the class reload the test framework (and reduce possibilities of multiple
 
 After subclassing, set sniffer_instance parameter to your custom class when calling run
 or main.
-
-Using the FileSystem monitoring code
-------------------------------------
-
-If you simply want to use the file system monitor code, ``import sniffer.Scanner``. Behind
-the scenes, the library will figure out what libraries are available to use and which
-monitor technique to use.
-
-Right now, this is lacking some documentation, but here's a small example.
-
-Creating the scanner is simple::
-
-  from sniffer import Scanner
-
-  paths = ('/path/to/watch/', '/another/path')
-  scanner = Scanner(paths)
-
-Here we pass a tuple of paths to monitor. Now we need to get notification when events occur::
-
-  # when file is created (function accepts the filepath string)
-  scanner.observe('created', file_created_func)
-
-  # when file is modified (function accepts the filepath string)
-  scanner.observe('modified', file_modified_func)
-
-  # when file is deleted (function accepts the filepath string)
-  scanner.observe('deleted', file_deleted_func)
-
-  def init_func(filename):
-      print "Scanner started listening"
-  # when scanner.loop() is called
-  scanner.observe('init', init_func)
-
-In addition, we can use the same function to listen to multiple events::
-
-  # listen to multiple events
-  def output_file(filename):
-      print "Triggered", filename
-  scanner.observe(('created', 'modified', 'deleted'), output_file)
-
-Finally, we start our blocking loop::
-
-  # blocks
-  scanner.loop()
 
 Current Issues
 ==============
