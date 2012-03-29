@@ -24,15 +24,15 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 """
 
 import sys
-import subprocess
 if sys.platform.startswith('darwin') or sys.platform.startswith('win'):
     import Growl
 else:
     import pynotify
+    import gtk
 
 class Notifier(object):
 
-    def notify(self, title=None, message=None, image=None):
+    def notify(self, title=None, message=None, urgent=False, image=None):
         pass
 
     @classmethod
@@ -54,7 +54,7 @@ class LibnotifyNotifier(Notifier):
             LibnotifyNotifier.inst = LibnotifyNotifier()
         return LibnotifyNotifier.inst
 
-    def notify(self, title, message, image=None):
+    def notify(self, title, message, urgent=False, image=None):
         if not pynotify.is_initted():
             pynotify.init('sniffer')
         if image:
@@ -62,6 +62,14 @@ class LibnotifyNotifier(Notifier):
             notification = pynotify.Notification(title, message, image)
         else:
             notification = pynotify.Notification(title, message)
+        helper = gtk.Label()
+        if urgent:
+            #notification.set_urgency(pynotify.URGENCY_CRITICAL)
+            icon = helper.render_icon(gtk.STOCK_DIALOG_ERROR, gtk.ICON_SIZE_DIALOG)
+        else:
+            #notification.set_urgency(pynotify.URGENCY_LOW)
+            icon = helper.render_icon(gtk.STOCK_DIALOG_INFO, gtk.ICON_SIZE_DIALOG)
+        notification.set_icon_from_pixbuf(icon)
         if not notification.show():
             print "Failed showing python libnotify notification"
 
@@ -75,7 +83,7 @@ class GrowlNotifier(Notifier):
             GrowlNotifier.inst = GrowlNotifier()
         return GrowlNotifier.inst
 
-    def notify(self, title, message, image=None):
+    def notify(self, title, message, urgent=False, image=None):
         if image:
             image = Growl.Inmage.imageFromPath(image)
         sticky = bool(int(self.config['growl.sticky.notifications']))
