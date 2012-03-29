@@ -94,10 +94,10 @@ class Sniffer(object):
         """Calls self.run() and wraps for errors."""
         try:
             if self.run():
-                self.notifier.notify('sniffer', 'In good standing')
+                self.notifier.notify('sniffer', 'In good standing', urgent=False)
                 print self.pass_colors['bg'](self.pass_colors['fg']("In good standing"))
             else:
-                self.notifier.notify('sniffer', 'Failed - Back to work!')
+                self.notifier.notify('sniffer', 'Failed - Back to work!', urgent=True)
                 print self.fail_colors['bg'](self.fail_colors['fg']("Failed - Back to work!"))
         except StandardError:
             import traceback
