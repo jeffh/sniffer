@@ -25,7 +25,7 @@ class PyWinScanner(BaseScanner):
         
     def _get_handle(self, path):
         return win32file.CreateFile(
-            self.path,                                            # filename
+            path,                                                 # filename
             FILE_LIST_DIR,                                        # desired access
             win32con.FILE_SHARE_READ | win32con.FILE_SHARE_WRITE, # share mode
             None,                                                 # security attrs
@@ -36,7 +36,7 @@ class PyWinScanner(BaseScanner):
 
     def _get_changes(self, handle):
         return win32file.ReadDirectoryChangesW(
-            hDir, # directory handle
+            handle, # directory handle
             1024, # buffer len (return size)
             True, # watch recursively
             # notify filters
@@ -51,10 +51,10 @@ class PyWinScanner(BaseScanner):
         )
 
     def step(self):
-        for handle in (self._get_changes(p) for p in self.paths):
+        for path, handle in ((p, self._get_handle(p)) for p in self.paths):
             results = self._get_changes(handle)
             for action, filename in results:
-                fullpath = os.path.join(self.path, filename)
+                fullpath = os.path.join(path, filename)
                 if self.is_valid_type(fullpath):
                     continue
                 action = ACTIONS.get(action, "unknown")
