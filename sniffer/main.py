@@ -6,6 +6,14 @@ from scanner import Scanner
 from runner import Sniffer, ScentSniffer
 from metadata import __version__
 import sys
+import os
+
+if os.name == "nt":
+    try:
+        import colorama
+        colorama.init()
+    except ImportError:
+        pass
 
 __all__ = ['run', 'main']
 
