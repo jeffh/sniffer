@@ -5,9 +5,9 @@ __all__ = [
 
 
 __author__ = "Jeff Hui"
-__author_email__ = 'contrib@jeffhui.net'
-__copyright__ = "Copyright 2010, Jeff Hui"
-__credits__ = ["Jeff Hui"]
+__author_email__ = "jeff@jeffhui.net"
+__copyright__ = "Copyright 2012, Jeff Hui"
+__credits__ = ["Jeff Hui", "Patrice Neff"]
 
 __license__ = "MIT"
-__version__ = "0.2.4"
+__version__ = "0.2.5"
