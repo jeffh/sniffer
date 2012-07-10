@@ -1,8 +1,8 @@
-python-termstyle==0.1.5
+python-termstyle==0.1.10
 
 # supports nose out of the box
 # for reasonable defaults, we use nose.
-nose==0.11.4
+nose==1.1.2
 
 # Linux
 #pyinotify==0.9.0

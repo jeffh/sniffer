@@ -21,12 +21,12 @@ class BaseScanner(object):
         for e in self.ALL_EVENTS:
             self._events[e] = []
         self._watched_files = {}
-        
+
     def add_validator(self, func):
         if not callable(func):
             raise TypeError("Param should return boolean and accept a filename str.")
         self._validators.append(func)
-        
+
     def remove_validator(self, func):
         self._validators.remove(func)
 
@@ -50,13 +50,13 @@ class BaseScanner(object):
     def trigger_init(self):
         """Triggers initialization event."""
         self._trigger('init')
-    
+
     def _get_modified_time(self, filepath):
         """Returns the modified type for the given filepath or None on failure"""
         if not os.path.isfile(filepath):
             return None
         return os.stat(filepath).st_mtime
-    
+
     def loop(self, sleep_time=0.5, callback=None):
         """Runs a blocking loop."""
         raise NotImplemented()
@@ -64,7 +64,7 @@ class BaseScanner(object):
     def step(self):
         """
         Looks at changes temporarily before stopping.
-        
+
         Fires a series of events only once, as defined by the backend. But step is
         always ensured to stop.
         """
@@ -107,14 +107,14 @@ class BaseScanner(object):
         self.log('event: %s' % event_name, *args)
         for f in self._events[event_name]:
             f(*args, **kwargs)
-            
+
     def default_validator(self, filepath):
         """
         The default validator only accepts files ending in .py
         (and not prefixed by a period).
         """
         return filepath.endswith('.py') and not os.path.basename(filepath).startswith('.')
-    
+
     def not_repo(self, filepath):
         """
         This excludes repository directories because they cause some exceptions occationally.
@@ -153,7 +153,7 @@ class BaseScanner(object):
     def observe(self, event_name, func):
         """
         event_name := {'created', 'modified', 'deleted'}, list, tuple
-        
+
         Attaches a function to run to a particular event. The function must be
         unique to be removed cleanly. Alternatively, event_name can be an list/tuple
         if any of the string possibilities to be added on multiple events.
@@ -168,7 +168,7 @@ class BaseScanner(object):
     def unobserve(self, event_name, func):
         """
         event_name := {'created', 'modified', 'deleted'}, list, tuple
-        
+
         Removes an observer function from a particular event that was added by
         observe().
         """
@@ -225,7 +225,7 @@ class PollingScanner(BaseScanner):
     def _requires_new_modtime(self, filepath):
         """Returns True if the stored modtime needs to be updated."""
         return self._is_new(filepath) or self._is_modified(filepath)
-    
+
     def _is_new(self, filepath):
         """Returns True if file is not already on the watch list."""
         return filepath not in self._watched_files
@@ -235,8 +235,11 @@ class PollingScanner(BaseScanner):
         Goes into a blocking IO loop. If polling is used, the sleep_time is
         the interval, in seconds, between polls.
         """
-        
+
         self.log("No supported libraries found: using polling-method.")
+        self._running = True
+        self.trigger_init()
+        self._scan(trigger=False) # put after the trigger
         if self._warn:
             print """
 You should install a third-party library so I don't eat CPU.
@@ -244,12 +247,9 @@ Supported libraries are:
   - pyinotify (Linux)
   - pywin32 (Windows)
   - MacFSEvents (OSX)
-  
+
 Use pip or easy_install and install one of those libraries above.
 """
-        self._running = True
-        self.trigger_init()
-        self._scan(trigger=False) # put after the trigger
         while self._running:
             self._scan()
             if callable(callback):

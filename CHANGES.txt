@@ -1,5 +1,13 @@
 ChangeLog
 =========
+0.2.4
+-----
+ - Fixed windows support
+ - Actually fixed warning about not using third party libraries - event when clear is set to True
+ - Updated dependencies:
+   - python-termstyle (0.1.5 -> 0.1.10)
+   - nose (0.11.4 -> 1.1.2)
+
 0.2.3
 -----
  - Fixed bug where scent.py file wasn't being picked up (wrong Sniffer class was loaded).

@@ -19,7 +19,7 @@ class Sniffer(object):
     Handles the execution of the sniffer. The interface that main.run expects is:
 
     ``set_up(test_args, clear, debug)``
-    
+
       ``test_args`` The arguments to pass to the test runner.
       ``clear``     Boolean. Set to True if we should clear console before running
                     the tests.
@@ -37,7 +37,7 @@ class Sniffer(object):
         self.pass_colors = {'fg': white, 'bg': bg_green}
         self.fail_colors = {'fg': white, 'bg': bg_red}
         self.set_up()
-        
+
     def set_up(self, test_args=(), clear=True, debug=False):
         """
         Sets properties right before calling run.
@@ -49,7 +49,7 @@ class Sniffer(object):
         """
         self.test_args = test_args
         self.debug, self.clear = debug, clear
-        
+
     def absorb_args(self, func):
         """
         Calls a function without any arguments. The returned caller function
@@ -59,7 +59,7 @@ class Sniffer(object):
         def wrapper(*args, **kwargs):
             return func()
         return wrapper
-    
+
     def observe_scanner(self, scanner):
         """
         Hooks into multiple events of a scanner.
@@ -110,9 +110,6 @@ class Sniffer(object):
         Runs the unit test framework. Can be overridden to run anything.
         Returns True on passing and False on failure.
         """
-        # import here instead of on top:
-        # - To force a module reload to resolve this bug until Nose fixes it:
-        #   http://github.com/gfxmonk/autonose/issues#issue/13
         try:
             import nose
             arguments = [sys.argv[0]] + list(self.test_args)
@@ -130,14 +127,14 @@ class ScentSniffer(Sniffer):
         self.scent = scent_picker.exec_from_dir(self.cwd, scent)
         super(ScentSniffer, self).__init__()
         self.update_from_scent()
-        
+
     def update_from_scent(self):
         if self.scent:
             self.pass_colors['fg'] = self.scent.fg_pass
             self.pass_colors['bg'] = self.scent.bg_pass
             self.fail_colors['fg'] = self.scent.fg_fail
             self.fail_colors['bg'] = self.scent.bg_fail
-        
+
     def refresh_scent(self, filepath):
         if self.scent and filepath == self.scent.filename:
             print "Reloaded Scent:", filepath
@@ -147,29 +144,29 @@ class ScentSniffer(Sniffer):
             self.update_from_scent()
             for s in self._scanners:
                 self.scent_observe_scanner(s)
-                
+
     def unobserve_scanner(self, scanner):
         for v in self.scent.validators:
             if self.debug:
                 print "Removed", repr(v)
             scanner.remove_validator(v)
-            
+
     def scent_observe_scanner(self, scanner):
         if self.scent:
             for v in self.scent.validators:
                 if self.debug:
                     print "Added", repr(v)
                 scanner.add_validator(v)
-    
-    def observe_scanner(self, scanner):            
+
+    def observe_scanner(self, scanner):
         scanner.observe('created', self.refresh_scent)
         scanner.observe('modified', self.refresh_scent)
         self.scent_observe_scanner(scanner)
         return super(ScentSniffer, self).observe_scanner(scanner)
-        
+
     def clear_on_run(self):
         super(ScentSniffer, self).clear_on_run(None)
-        
+
     def run(self):
         """
         Runs the CWD's scent file.
