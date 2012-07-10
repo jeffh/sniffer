@@ -5,15 +5,6 @@ from setuptools import setup, find_packages
 
 __version__, __author__, __author_email__ = "0.2.4", "Jeff Hui", "contrib@jeffhui.net"
 
-requires=[
-    'python-termstyle',
-    'nose',
-]
-
-# Require colorama on Windows to support terminal color.
-if os.name == 'nt':
-    requires.append("colorama")
-
 setup(
     name='sniffer',
     version=__version__,
@@ -22,7 +13,11 @@ setup(
     author=__author__,
     author_email=__author_email__,
     url='http://github.com/jeffh/sniffer/',
-    install_requires=requires,
+    install_requires=[
+        'colorama',
+        'python-termstyle',
+        'nose',
+    ],
     entry_points = {
         'console_scripts': ['sniffer = sniffer:main'],
     },

@@ -8,12 +8,8 @@ from metadata import __version__
 import sys
 import os
 
-if os.name == "nt":
-    try:
-        import colorama
-        colorama.init()
-    except ImportError:
-        pass
+import colorama
+colorama.init()
 
 __all__ = ['run', 'main']
 
