@@ -5,6 +5,7 @@ import platform
 import os
 import sys
 import scent_picker
+import notifiers
 
 __all__ = ['Sniffer']
 
@@ -37,6 +38,7 @@ class Sniffer(object):
         self.pass_colors = {'fg': white, 'bg': bg_green}
         self.fail_colors = {'fg': white, 'bg': bg_red}
         self.set_up()
+        self.notifier = notifiers.Notifier.create()
 
     def set_up(self, test_args=(), clear=True, debug=False):
         """
@@ -92,8 +94,10 @@ class Sniffer(object):
         """Calls self.run() and wraps for errors."""
         try:
             if self.run():
+                self.notifier.notify('sniffer', 'In good standing', urgent=False)
                 print self.pass_colors['bg'](self.pass_colors['fg']("In good standing"))
             else:
+                self.notifier.notify('sniffer', 'Failed - Back to work!', urgent=True)
                 print self.fail_colors['bg'](self.fail_colors['fg']("Failed - Back to work!"))
         except StandardError:
             import traceback
@@ -110,6 +114,9 @@ class Sniffer(object):
         Runs the unit test framework. Can be overridden to run anything.
         Returns True on passing and False on failure.
         """
+        # import here instead of on top:
+        # - To force a module reload to resolve this bug until Nose fixes it:
+        #   http://github.com/gfxmonk/autonose/issues#issue/13
         try:
             import nose
             arguments = [sys.argv[0]] + list(self.test_args)
