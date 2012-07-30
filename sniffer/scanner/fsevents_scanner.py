@@ -16,7 +16,7 @@ class FSEventsScanner(BaseScanner):
     def __init__(self, *args, **kwargs):
         super(FSEventsScanner, self).__init__(*args, **kwargs)
         self._observer = self._generate_observer()
-    
+
     def _generate_observer(self):
         observer = fsevents.Observer()
         # use file_events=True to mimic other implementations
@@ -24,7 +24,7 @@ class FSEventsScanner(BaseScanner):
             stream = fsevents.Stream(self._callback, path, file_events=True)
             observer.schedule(stream)
         return observer
-        
+
     def loop(self, sleep_time=None):
         self.log("Library of choice: MacFSEvents")
         self.trigger_init()
@@ -38,7 +38,21 @@ class FSEventsScanner(BaseScanner):
         #observer.run() # blocking
 
     def stop(self):
+        # Ugly hack, calling Observer.stop() creates a lot of atexit errors
+        # that we just want to escape without problems.
+        #
+        # So we're silently absorbing all the errors
+        import sys
+        try:
+            from cStringIO import StringIO
+        except:
+            from StringIO import StringIO
+        old_err, old_out = sys.stderr, sys.stdout
+        sys.stderr, sys.stdout = StringIO(), StringIO()
+
         self._observer.stop()
+
+        sys.stderr, sys.stdout = old_err, old_out
 
 #    def step(self):
 #        observer = self._generate_observer()
