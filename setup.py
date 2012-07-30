@@ -17,7 +17,7 @@ setup(
         'python-termstyle',
         'nose',
     ],
-    extra_require = {
+    extras_require = {
         'Growl': ['gntp==0.7'],
         'LibNotify': ['py-notify==0.3.1'],
         'OSX': ['MacFSEvents==0.2.8'],

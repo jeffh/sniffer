@@ -2,8 +2,7 @@ ChangeLog
 =========
 0.2.6
 -----
-
-
+ - Resolved typo for setup.py: extra_require -> extras_require
 
 0.2.5
 -----
