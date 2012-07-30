@@ -22,7 +22,7 @@ To install::
 Simply run ``sniffer`` in your project directory.
 
 You can use ``sniffer --help`` for options And like autonose_, you can pass the nose 
-arguments: ``-x--with-doctest`` or ``-x--config``.
+arguments with *-x* prefix: ``-x--with-doctest`` or ``-x--config``.
 
 The problem with autonose_, is that the autodetect can be slow to detect changes. This is due
 to the pure python implementation - manually walking through the file system to see what's
@@ -32,6 +32,11 @@ third-party library can help fix the problem. The library is dependent on your o
  - If you use **Linux**, you'll need to install pyinotify_.
  - If you use **Windows**, you'll need to install pywin32_.
  - If you use **Mac OS X** 10.5+ (Leopard), you'll need to install MacFSEvents_.
+
+If you want support for other notification systems, you can install:
+
+ - gntp_ for Growl_ support (Mac OS X).
+ - py-notify_ for LibNotify_ support (Linux).
  
 .. [#] This has been resolved in subsequent autonose versions, using watchdog.
 .. _nose: http://code.google.com/p/python-nose/
@@ -41,6 +46,10 @@ third-party library can help fix the problem. The library is dependent on your o
 .. _pyinotify: http://trac.dbzteam.org/pyinotify
 .. _pywin32: http://sourceforge.net/projects/pywin32/
 .. _MacFSEvents: http://pypi.python.org/pypi/MacFSEvents/0.2.1
+.. _gntp: https://github.com/kfdm/gntp/
+.. _Growl: http://growl.info
+.. _py-notify: http://home.gna.org/py-notify
+.. _LibNotify: http://developer-next.gnome.org/libnotify/
 
 Advanced Usage
 ------
