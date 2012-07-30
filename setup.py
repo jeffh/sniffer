@@ -17,6 +17,13 @@ setup(
         'python-termstyle',
         'nose',
     ],
+    extra_require = {
+        'Growl': ['gntp==0.7'],
+        'LibNotify': ['py-notify==0.3.1'],
+        'OSX': ['MacFSEvents==0.2.8'],
+        #'Windows': ['pywin'], # not part of PYPI
+        'Linux': ['pyinotify==0.9.0'],
+    },
     entry_points = {
         'console_scripts': ['sniffer = sniffer:main'],
     },

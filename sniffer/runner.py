@@ -1,4 +1,5 @@
 from modules_restore_point import ModulesRestorePoint
+from broadcasters import broadcaster
 from functools import wraps
 from termstyle import bg_red, bg_green, white
 import platform
@@ -92,9 +93,9 @@ class Sniffer(object):
         """Calls self.run() and wraps for errors."""
         try:
             if self.run():
-                print self.pass_colors['bg'](self.pass_colors['fg']("In good standing"))
+                broadcaster.success(self)
             else:
-                print self.fail_colors['bg'](self.fail_colors['fg']("Failed - Back to work!"))
+                broadcaster.failure(self)
         except StandardError:
             import traceback
             traceback.print_exc()
