@@ -1,4 +1,5 @@
-python-termstyle==0.1.10
+python-termstyle==0.1.5
+colorama==0.2.4
 
 # supports nose out of the box
 # for reasonable defaults, we use nose.

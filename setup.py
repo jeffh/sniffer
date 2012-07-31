@@ -14,6 +14,7 @@ setup(
     author_email=__author_email__,
     url='http://github.com/jeffh/sniffer/',
     install_requires=[
+        'colorama',
         'python-termstyle',
         'nose',
     ],

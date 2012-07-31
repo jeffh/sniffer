@@ -7,6 +7,9 @@ from runner import Sniffer, ScentSniffer
 from metadata import __version__
 import sys
 
+import colorama
+colorama.init()
+
 __all__ = ['run', 'main']
 
 def run(sniffer_instance=None, wait_time=0.5, clear=True, args=(), debug=False):
@@ -34,7 +37,7 @@ def run(sniffer_instance=None, wait_time=0.5, clear=True, args=(), debug=False):
         scanner = Scanner(('.',))
     #sniffer = sniffer_cls(tuple(args), clear, debug)
     sniffer_instance.set_up(tuple(args), clear, debug)
-    
+
     sniffer_instance.observe_scanner(scanner)
     scanner.loop(wait_time)
 
@@ -63,7 +66,7 @@ def main(sniffer_instance=None, test_args=(), progname=sys.argv[0], args=sys.arg
                       "arguments.)")
     (options, args) = parser.parse_args(args)
     test_args = test_args + tuple(options.test_args)
-    
+
     if options.debug:
         print "Options:", options
         print "Test Args:", test_args
