@@ -1,6 +1,7 @@
 
 clear:
 	find . | grep --regexp '.pyc$$' | xargs rm
+	rm -rf build
 
 upload: pypi
 
