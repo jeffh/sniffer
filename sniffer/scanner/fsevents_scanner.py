@@ -8,6 +8,7 @@ from base import BaseScanner
 import os
 import fsevents
 import time
+import sys
 
 class FSEventsScanner(BaseScanner):
     """
@@ -42,7 +43,6 @@ class FSEventsScanner(BaseScanner):
         # that we just want to escape without problems.
         #
         # So we're silently absorbing all the errors
-        import sys
         try:
             from cStringIO import StringIO
         except:
