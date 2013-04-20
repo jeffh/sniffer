@@ -32,9 +32,9 @@ def run(sniffer_instance=None, wait_time=0.5, clear=True, args=(), debug=False):
         sniffer_instance = ScentSniffer()
 
     if debug:
-        scanner = Scanner(('.',), logger=sys.stdout)
+        scanner = Scanner(sniffer_instance.watch_paths, logger=sys.stdout)
     else:
-        scanner = Scanner(('.',))
+        scanner = Scanner(sniffer_instance.watch_paths)
     #sniffer = sniffer_cls(tuple(args), clear, debug)
     sniffer_instance.set_up(tuple(args), clear, debug)
 

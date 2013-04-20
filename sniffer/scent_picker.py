@@ -54,6 +54,11 @@ class ScentModule(object):
     def bg_fail(self):
         return getattr(self.mod, 'fail_bg_color', termstyle.bg_red)
 
+    @property
+    def watch_paths(self):
+        return getattr(self.mod, 'watch_paths', ('.',))
+
+
 def load_file(filename):
     "Runs the given scent.py file."
     mod_name = '.'.join(os.path.basename(filename).split('.')[:-1])
