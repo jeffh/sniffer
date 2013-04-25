@@ -37,6 +37,7 @@ class Sniffer(object):
         self._scanners = []
         self.pass_colors = {'fg': white, 'bg': bg_green}
         self.fail_colors = {'fg': white, 'bg': bg_red}
+        self.watch_paths = ('.',)
         self.set_up()
 
     def set_up(self, test_args=(), clear=True, debug=False):
@@ -135,6 +136,7 @@ class ScentSniffer(Sniffer):
             self.pass_colors['bg'] = self.scent.bg_pass
             self.fail_colors['fg'] = self.scent.fg_fail
             self.fail_colors['bg'] = self.scent.bg_fail
+            self.watch_paths = self.scent.watch_paths
 
     def refresh_scent(self, filepath):
         if self.scent and filepath == self.scent.filename:
