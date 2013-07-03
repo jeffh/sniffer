@@ -7,6 +7,7 @@ the directory tree to see which files changed, calling os.stat on the files.
 """
 import os
 import time
+import collections
 
 class BaseScanner(object):
     """
@@ -23,7 +24,7 @@ class BaseScanner(object):
         self._watched_files = {}
 
     def add_validator(self, func):
-        if not callable(func):
+        if not isinstance(func, collections.Callable):
             raise TypeError("Param should return boolean and accept a filename str.")
         self._validators.append(func)
 
@@ -146,7 +147,7 @@ class BaseScanner(object):
         if event_name not in self.ALL_EVENTS:
             raise TypeError('event_name ("%s") can only be one of the following: %s' % \
                             (event_name, repr(self.ALL_EVENTS)))
-        if not callable(func):
+        if not isinstance(func, collections.Callable):
             raise TypeError('func must be callable to be added as an observer.')
         getattr(self._events[event_name], method)(func)
 
@@ -241,7 +242,7 @@ class PollingScanner(BaseScanner):
         self.trigger_init()
         self._scan(trigger=False) # put after the trigger
         if self._warn:
-            print """
+            print("""
 You should install a third-party library so I don't eat CPU.
 Supported libraries are:
   - pyinotify (Linux)
@@ -249,10 +250,10 @@ Supported libraries are:
   - MacFSEvents (OSX)
 
 Use pip or easy_install and install one of those libraries above.
-"""
+""")
         while self._running:
             self._scan()
-            if callable(callback):
+            if isinstance(callback, collections.Callable):
                 callback()
             time.sleep(sleep_time)
 
@@ -282,7 +283,7 @@ Use pip or easy_install and install one of those libraries above.
                         self._watch_file(fpath, trigger)
                         changed = True
             files_seen = set(files_seen)
-            for f in self._watched_files.keys():
+            for f in self._watched_files:
                 if f not in files_seen:
                     self._unwatch_file(f, trigger)
                     changed = True

@@ -1,3 +1,4 @@
+from __future__ import print_function
 import sys
 
 
@@ -11,10 +12,12 @@ class NullEmitter(object):
 class PrinterEmitter(object):
     "Simply emits exit status info to the console/terminal."
     def success(self, sniffer):
-        print sniffer.pass_colors['bg'](sniffer.pass_colors['fg']("In good standing"))
+        print(sniffer.pass_colors['bg'](
+            sniffer.pass_colors['fg']("In good standing")))
 
     def failure(self, sniffer):
-        print sniffer.fail_colors['bg'](sniffer.fail_colors['fg']("Failed - Back to work!"))
+        print(sniffer.fail_colors['bg'](
+            sniffer.fail_colors['fg']("Failed - Back to work!")))
 
 try:
     import pynotify
@@ -46,7 +49,7 @@ try:
             try:
                 self.growl.register()
             except socket.error:
-                print >>sys.stderr, "Failed to connect to growl! :("
+                print("Failed to connect to growl! :(", file=sys.stderr)
                 self.growl = None
 
         def success(self, sniffer):

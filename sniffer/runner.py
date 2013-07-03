@@ -1,3 +1,4 @@
+from __future__ import print_function
 from modules_restore_point import ModulesRestorePoint
 from broadcasters import broadcaster
 from functools import wraps
@@ -9,10 +10,15 @@ import scent_picker
 
 __all__ = ['Sniffer']
 
+try:
+    _ = StandardError
+except NameError:
+    StandardError = Exception
+
 # for debugging
 def echo(text):
     def wrapped(filepath):
-        print text % {'file': filepath}
+        print(text % {'file': filepath})
     return wrapped
 
 class Sniffer(object):
@@ -83,7 +89,7 @@ class Sniffer(object):
         else:
             os.system('clear')
         if prefix:
-            print prefix
+            print(prefix)
 
     def _stop(self):
         """Calls stop() to all scanner in an attempt to quit."""
@@ -117,9 +123,9 @@ class Sniffer(object):
             arguments = [sys.argv[0]] + list(self.test_args)
             return nose.run(argv=arguments)
         except ImportError:
-            print
-            print "*** Nose library missing. Please install it. ***"
-            print
+            print()
+            print("*** Nose library missing. Please install it. ***")
+            print()
             raise
 
 class ScentSniffer(Sniffer):
@@ -140,7 +146,7 @@ class ScentSniffer(Sniffer):
 
     def refresh_scent(self, filepath):
         if self.scent and filepath == self.scent.filename:
-            print "Reloaded Scent:", filepath
+            print("Reloaded Scent:", filepath)
             for s in self._scanners:
                 self.unobserve_scanner(s)
             self.scent = self.scent.reload()
@@ -151,14 +157,14 @@ class ScentSniffer(Sniffer):
     def unobserve_scanner(self, scanner):
         for v in self.scent.validators:
             if self.debug:
-                print "Removed", repr(v)
+                print("Removed", repr(v))
             scanner.remove_validator(v)
 
     def scent_observe_scanner(self, scanner):
         if self.scent:
             for v in self.scent.validators:
                 if self.debug:
-                    print "Added", repr(v)
+                    print("Added", repr(v))
                 scanner.add_validator(v)
 
     def observe_scanner(self, scanner):
@@ -175,10 +181,10 @@ class ScentSniffer(Sniffer):
         Runs the CWD's scent file.
         """
         if not self.scent or len(self.scent.runners) == 0:
-            print "Did not find 'scent.py', running nose:"
+            print("Did not find 'scent.py', running nose:")
             return super(ScentSniffer, self).run()
         else:
-            print "Using scent:"
+            print("Using scent:")
             arguments = [sys.argv[0]] + list(self.test_args)
             return self.scent.run(arguments)
         return True

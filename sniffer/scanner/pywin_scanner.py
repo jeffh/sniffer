@@ -5,7 +5,8 @@ Requires the pywin32 library
 The code is based off Tim Golden's work:
 http://timgolden.me.uk/python/win32_how_do_i/watch_directory_for_changes.html
 """
-from base import BaseScanner
+from __future__ import absolute_import
+from .base import BaseScanner
 import win32file
 import win32con
 import os
