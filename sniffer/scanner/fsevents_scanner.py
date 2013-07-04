@@ -4,7 +4,8 @@ Scanner that relies on the MacFSEvents (OSX) library.
 This is an OS-specific implementation that eliminates the constant polling of the
 directory tree by hooking into OSX's IO events.
 """
-from base import BaseScanner
+from __future__ import absolute_import
+from .base import BaseScanner
 import os
 import fsevents
 import time
@@ -44,9 +45,12 @@ class FSEventsScanner(BaseScanner):
         #
         # So we're silently absorbing all the errors
         try:
-            from cStringIO import StringIO
+            from io import StringIO
         except:
-            from StringIO import StringIO
+            try:
+                from cStringIO import StringIO
+            except:
+                from StringIO import StringIO
         old_err, old_out = sys.stderr, sys.stdout
         sys.stderr, sys.stdout = StringIO(), StringIO()
 

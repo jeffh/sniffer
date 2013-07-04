@@ -1,4 +1,5 @@
-from base import BaseScanner
+from __future__ import absolute_import
+from .base import BaseScanner
 import platform
 
 import pyinotify

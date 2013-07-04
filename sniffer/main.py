@@ -1,6 +1,7 @@
 """
 Main runners. Bootloads Sniffer class.
 """
+from __future__ import print_function, absolute_import
 from optparse import OptionParser
 from scanner import Scanner
 from runner import Sniffer, ScentSniffer
@@ -68,13 +69,13 @@ def main(sniffer_instance=None, test_args=(), progname=sys.argv[0], args=sys.arg
     test_args = test_args + tuple(options.test_args)
 
     if options.debug:
-        print "Options:", options
-        print "Test Args:", test_args
+        print("Options:", options)
+        print("Test Args:", test_args)
     try:
-        print "Starting watch..."
+        print("Starting watch...")
         run(sniffer_instance, options.wait_time, options.clear_on_run, test_args, options.debug)
     except KeyboardInterrupt:
-        print "Good bye."
+        print("Good bye.")
     except Exception:
         import traceback
         traceback.print_exc()
