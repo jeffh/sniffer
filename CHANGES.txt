@@ -1,7 +1,8 @@
 ChangeLog
 =========
-0.2.7
+0.3.0
 -----
+ - Added python 3 support
 
 0.2.6
 -----
