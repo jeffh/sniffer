@@ -1,3 +1,4 @@
+from __future__ import print_function
 g = globals().copy()
 import os, sys, termstyle
 
@@ -16,7 +17,7 @@ class ScentModule(object):
                 self.validators.append(obj)
         self.runners = tuple(self.runners)
         self.validators = tuple(self.validators)
-        print self.validators
+        print(self.validators)
         
     def reload(self):
         try:
@@ -24,8 +25,8 @@ class ScentModule(object):
         except Exception:
             import traceback
             traceback.print_exc()
-            print
-            print "Still using previously valid Scent."
+            print()
+            print("Still using previously valid Scent.")
             return self
     
     def run(self, args):
@@ -37,7 +38,7 @@ class ScentModule(object):
         except Exception:
             import traceback
             traceback.print_exc()
-            print
+            print()
             return False
         
     @property
@@ -65,7 +66,7 @@ def load_file(filename):
     mod_path = os.path.dirname(filename)
     
     global_vars = globals()
-    if mod_name in sys.modules.keys():
+    if mod_name in sys.modules:
         del sys.modules[mod_name]
     if mod_path not in set(sys.modules.keys()):
         sys.path.insert(0, mod_path)
