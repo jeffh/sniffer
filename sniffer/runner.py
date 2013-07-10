@@ -1,12 +1,13 @@
 from __future__ import print_function
-from modules_restore_point import ModulesRestorePoint
-from broadcasters import broadcaster
+from __future__ import absolute_import
+from .modules_restore_point import ModulesRestorePoint
+from .broadcasters import broadcaster
 from functools import wraps
 from termstyle import bg_red, bg_green, white
 import platform
 import os
 import sys
-import scent_picker
+from . import scent_picker
 
 __all__ = ['Sniffer']
 
