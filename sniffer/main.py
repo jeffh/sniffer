@@ -3,9 +3,9 @@ Main runners. Bootloads Sniffer class.
 """
 from __future__ import print_function, absolute_import
 from optparse import OptionParser
-from scanner import Scanner
-from runner import Sniffer, ScentSniffer
-from metadata import __version__
+from sniffer.scanner import Scanner
+from sniffer.runner import Sniffer, ScentSniffer
+from sniffer.metadata import __version__
 import sys
 
 import colorama
