@@ -3,7 +3,7 @@ from setuptools import setup, find_packages
 # will fail to install via pip/easy_install
 #from sniffer.metadata import __version__, __author__, __author_email__
 
-__version__, __author__, __author_email__ = "0.3.0", "Jeff Hui", "jeff@jeffhui.net"
+__version__, __author__, __author_email__ = "0.3.1", "Jeff Hui", "jeff@jeffhui.net"
 
 setup(
     name='sniffer',

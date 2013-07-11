@@ -10,4 +10,4 @@ __copyright__ = "Copyright 2013, Jeff Hui"
 __credits__ = ["Jeff Hui", "Patrice Neff", "Andrew Lee", "Will Harris"]
 
 __license__ = "MIT"
-__version__ = "0.3.0"
+__version__ = "0.3.1"
