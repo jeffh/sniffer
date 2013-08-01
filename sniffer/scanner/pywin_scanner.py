@@ -56,12 +56,12 @@ class PyWinScanner(BaseScanner):
             results = self._get_changes(handle)
             for action, filename in results:
                 fullpath = os.path.join(path, filename)
-                if self.is_valid_type(fullpath):
+                if not self.is_valid_type(fullpath):
                     continue
                 action = ACTIONS.get(action, "unknown")
                 if action == 'Created':
                     self.trigger_created(fullpath)
-                elif action in ('Updated', 'Renamed to'):
+                elif action in ('Updated', 'Renamed to', 'Renamed from'):
                     self.trigger_modified(fullpath)
                 elif action == 'Deleted':
                     self.trigger_deleted(fullpath)
