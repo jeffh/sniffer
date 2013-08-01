@@ -10,6 +10,7 @@ from .base import BaseScanner
 import win32file
 import win32con
 import os
+import thread, Queue, time
 
 ACTIONS = {}
 for i, name in enumerate(('Created', 'Deleted', 'Updated', 'Renamed from', 'Renamed to')):
@@ -23,6 +24,7 @@ class PyWinScanner(BaseScanner):
     def __init__(self, *args, **kwargs):
         super(PyWinScanner, self).__init__(*args, **kwargs)
         self._running = False
+        self._q = Queue.Queue(1)
         
     def _get_handle(self, path):
         return win32file.CreateFile(
@@ -35,8 +37,8 @@ class PyWinScanner(BaseScanner):
             None                                                  # template file (?)
         )
 
-    def _get_changes(self, handle):
-        return win32file.ReadDirectoryChangesW(
+    def _get_changes_blocking(self, handle):
+        result = win32file.ReadDirectoryChangesW(
             handle, # directory handle
             1024, # buffer len (return size)
             True, # watch recursively
@@ -50,6 +52,17 @@ class PyWinScanner(BaseScanner):
             None, # overlapped structure (?)
             None  # completion routine (async only)
         )
+        self._q.put(result)
+
+    """
+      Run the file system monitoring in a separate thread, so that the user
+      can interrupt (terminate) the main thread from the console.
+    """
+    def _get_changes(self, handle):
+        thread.start_new_thread(self._get_changes_blocking, (handle,))
+        while self._q.empty():
+            time.sleep(0.1)
+        return self._q.get()
 
     def step(self):
         for path, handle in ((p, self._get_handle(p)) for p in self.paths):
