@@ -1,5 +1,9 @@
 ChangeLog
 =========
+0.3.2
+-----
+ - Fixed pywin support for file system watching
+
 0.3.1
 -----
  - Added python 3 support
