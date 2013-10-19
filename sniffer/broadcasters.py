@@ -75,6 +75,29 @@ try:
 except ImportError:
     GrowlEmitter = NullEmitter
 
+try:
+    import subprocess
+    class TerminalNotifierEmitter(object):
+        "Emits exit status info to OS X terminal notifier"
+
+        def success(self, sniffer):
+            try:
+                subprocess.call(["terminal-notifier-success", "-title", "Sniffer", "-message", "In good standing"])
+            except Exception, e:
+                # we don't really care if this fails
+                pass
+
+        def failure(self, sniffer):
+            try:
+                subprocess.call(["terminal-notifier-failed", "-title", "Sniffer", "-message", "Failed - Back to work!"])
+            except Exception, e:
+                # we don't really care if this fails
+                pass
+
+except ImportError:
+    TerminalNotifierEmitter = NullEmitter
+
+
 
 class Broadcaster(object):
     def __init__(self, *emitters):
@@ -93,4 +116,5 @@ broadcaster = Broadcaster(
     PrinterEmitter(),
     GrowlEmitter(),
     PynotifyEmitter(),
+    TerminalNotifierEmitter()
 )
