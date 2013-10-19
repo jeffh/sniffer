@@ -100,10 +100,11 @@ class Sniffer(object):
     def _run(self):
         """Calls self.run() and wraps for errors."""
         try:
-            if self.run():
-                broadcaster.success(self)
+            result = self.run()
+            if result:
+                broadcaster.success(self, result)
             else:
-                broadcaster.failure(self)
+                broadcaster.failure(self, result)
         except StandardError:
             import traceback
             traceback.print_exc()
