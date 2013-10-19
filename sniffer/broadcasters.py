@@ -76,6 +76,7 @@ except ImportError:
     GrowlEmitter = NullEmitter
 
 try:
+    import os
     import subprocess
     import nose
     class TerminalNotifierEmitter(object):
@@ -83,22 +84,28 @@ try:
 
         def success(self, sniffer, result):
             try:
-                subprocess.call(["terminal-notifier-success",
-                    "-title", "Sniffer",
-                    "-subtitle", "In good standing",
-                    "-message", "%s specifications" % (result.denominator,)])
+                content = ["terminal-notifier-success",
+                           "-title", "Sniffer",
+                           "-subtitle", "In good standing",
+                           "-message", "%s specifications" % (
+                            result.denominator,)]
+                with open(os.devnull, "w") as f:
+                    subprocess.call(content, stdout=f)
             except Exception, e:
                 # we don't really care if this fails
                 pass
 
         def failure(self, sniffer, result):
             try:
-                subprocess.call(["terminal-notifier-failed",
-                    "-title", "Sniffer",
-                    "-subtitle", "Failed - Back to work!",
-                    "-message", "%s specifications, %s failures" % (
-                        result.denominator,
-                        result.denominator - result.numerator)])
+                content = ["terminal-notifier-failed",
+                           "-title", "Sniffer",
+                           "-subtitle", "Failed - Back to work!",
+                           "-message", "%s specifications, %s failures" % (
+                            result.denominator,
+                            result.denominator - result.numerator)]
+
+                with open(os.devnull, "w") as f:
+                    subprocess.call(content, stdout=f)
             except Exception, e:
                 # we don't really care if this fails
                 pass
