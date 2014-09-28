@@ -21,7 +21,7 @@ To install::
 
 Simply run ``sniffer`` in your project directory.
 
-You can use ``sniffer --help`` for options And like autonose_, you can pass the nose 
+You can use ``sniffer --help`` for options And like autonose_, you can pass the nose
 arguments with *-x* prefix: ``-x--with-doctest`` or ``-x--config``.
 
 The problem with autonose_, is that the autodetect can be slow to detect changes. This is due
@@ -37,7 +37,7 @@ If you want support for other notification systems, you can install:
 
  - gntp_ for Growl_ support (Mac OS X).
  - py-notify_ for LibNotify_ support (Linux).
- 
+
 .. [#] This has been resolved in subsequent autonose versions, using watchdog.
 .. _nose: http://code.google.com/p/python-nose/
 .. _easy_install: http://pypi.python.org/pypi/setuptools
@@ -66,7 +66,10 @@ your current working directory. Here's an example of what you can do so far::
   fail_fg_color = termstyle.red
   fail_bg_color = termstyle.bg_default
   
-  # this gets invoked on every file that gets changed in the directory. Return 
+  # All lists in this variable will be under surveillance for changes.
+  watch_paths = ['.', 'tests/']
+  
+  # this gets invoked on every file that gets changed in the directory. Return
   # True to invoke any runnable functions, False otherwise.
   #
   # This fires runnables only if files ending with .py extension and not prefixed
