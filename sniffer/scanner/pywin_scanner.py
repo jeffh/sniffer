@@ -10,9 +10,13 @@ from .base import BaseScanner
 import win32file
 import win32con
 import os
-import thread
-import Queue
+import threading
 import time
+import sys
+if sys.version_info[0] == 2:
+    import Queue as queue
+else:
+    import queue
 
 ACTIONS = {}
 for i, name in enumerate(('Created', 'Deleted', 'Updated', 'Renamed from',
@@ -28,7 +32,7 @@ class PyWinScanner(BaseScanner):
     def __init__(self, *args, **kwargs):
         super(PyWinScanner, self).__init__(*args, **kwargs)
         self._running = False
-        self._q = Queue.Queue(1)
+        self._q = queue.Queue(1)
 
     def _get_handle(self, path):
         return win32file.CreateFile(
@@ -63,7 +67,8 @@ class PyWinScanner(BaseScanner):
       can interrupt (terminate) the main thread from the console.
     """
     def _get_changes(self, handle):
-        thread.start_new_thread(self._get_changes_blocking, (handle,))
+        threading.Thread(target=self._get_changes_blocking,
+                         args=(handle,)).start()
         while self._q.empty():
             time.sleep(0.1)
         return self._q.get()
