@@ -6,8 +6,10 @@ class NullEmitter(object):
     "Emitter that does nothing."
     def success(self, sniffer):
         pass
+
     def failure(self, sniffer):
         pass
+
 
 class PrinterEmitter(object):
     "Simply emits exit status info to the console/terminal."
@@ -21,6 +23,7 @@ class PrinterEmitter(object):
 
 try:
     import pynotify
+
     class PynotifyEmitter(object):
         "Emits exit status info to libnotify"
         def __init__(self):
@@ -38,6 +41,7 @@ except ImportError:
 try:
     import gntp.notifier
     import socket
+
     class GrowlEmitter(object):
         "Emits exit status info to growl."
         def __init__(self):

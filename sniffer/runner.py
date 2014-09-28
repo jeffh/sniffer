@@ -16,28 +16,33 @@ try:
 except NameError:
     StandardError = Exception
 
+
 # for debugging
 def echo(text):
     def wrapped(filepath):
         print(text % {'file': filepath})
     return wrapped
 
+
 class Sniffer(object):
     """
-    Handles the execution of the sniffer. The interface that main.run expects is:
+    Handles the execution of the sniffer. The interface that main.run expects
+    is:
 
     ``set_up(test_args, clear, debug)``
 
       ``test_args`` The arguments to pass to the test runner.
-      ``clear``     Boolean. Set to True if we should clear console before running
-                    the tests.
-      ``debug``     Boolean. Set to True if we want to print debugging information.
+      ``clear``     Boolean. Set to True if we should clear console before
+                    running the tests.
+      ``debug``     Boolean. Set to True if we want to print debugging
+                    information.
 
     ``observe_scanner(scanner)``
 
-      ``scanner``   The scanner instance to hook events into. By default, ``self._run`` is
-                    attached, which then calls self.run(). The run method should return
-                    True on passing and False on failure.
+      ``scanner``   The scanner instance to hook events into. By default,
+                    ``self._run`` is attached, which then calls self.run(). The
+                    run method should return True on passing and False on
+                    failure.
     """
     def __init__(self):
         self.modules = ModulesRestorePoint()
@@ -52,9 +57,10 @@ class Sniffer(object):
         Sets properties right before calling run.
 
           ``test_args`` The arguments to pass to the test runner.
-          ``clear``     Boolean. Set to True if we should clear console before running
-                        the tests.
-          ``debug``     Boolean. Set to True if we want to print debugging information.
+          ``clear``     Boolean. Set to True if we should clear console before
+                        running the tests.
+          ``debug``     Boolean. Set to True if we want to print debugging
+                        information.
         """
         self.test_args = test_args
         self.debug, self.clear = debug, clear
@@ -73,9 +79,11 @@ class Sniffer(object):
         """
         Hooks into multiple events of a scanner.
         """
-        scanner.observe(scanner.ALL_EVENTS, self.absorb_args(self.modules.restore))
+        scanner.observe(scanner.ALL_EVENTS,
+                        self.absorb_args(self.modules.restore))
         if self.clear:
-            scanner.observe(scanner.ALL_EVENTS, self.absorb_args(self.clear_on_run))
+            scanner.observe(scanner.ALL_EVENTS,
+                            self.absorb_args(self.clear_on_run))
         scanner.observe(scanner.ALL_EVENTS, self.absorb_args(self._run))
         if self.debug:
             scanner.observe('created',  echo("callback - created  %(file)s"))
@@ -128,6 +136,7 @@ class Sniffer(object):
             print("*** Nose library missing. Please install it. ***")
             print()
             raise
+
 
 class ScentSniffer(Sniffer):
     """Runs arbitrary python code in the cwd's scent.py file."""

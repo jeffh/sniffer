@@ -2,18 +2,21 @@
 Scanner class.
 
 Provides a polling technique which is an OS-independent and uses no third-party
-libraries at the cost of performance. The polling technique constantly walks through
-the directory tree to see which files changed, calling os.stat on the files.
+libraries at the cost of performance. The polling technique constantly walks
+throughthe directory tree to see which files changed, calling os.stat on the
+files.
 """
 import os
 import time
 import collections
+
 
 class BaseScanner(object):
     """
     Provides basic hooking and logging mechanisms.
     """
     ALL_EVENTS = ('created', 'modified', 'deleted', 'init')
+
     def __init__(self, paths, logger=None, *args, **kwargs):
         self._validators = []
         self._paths = [os.path.abspath(p) for p in paths]
@@ -25,7 +28,8 @@ class BaseScanner(object):
 
     def add_validator(self, func):
         if not isinstance(func, collections.Callable):
-            raise TypeError("Param should return boolean and accept a filename str.")
+            raise TypeError(("Param should return boolean and accept a "
+                             "filename string"))
         self._validators.append(func)
 
     def remove_validator(self, func):
@@ -53,7 +57,9 @@ class BaseScanner(object):
         self._trigger('init')
 
     def _get_modified_time(self, filepath):
-        """Returns the modified type for the given filepath or None on failure"""
+        """
+        Returns the modified type for the given filepath or None on failure
+        """
         if not os.path.isfile(filepath):
             return None
         return os.stat(filepath).st_mtime
@@ -66,8 +72,8 @@ class BaseScanner(object):
         """
         Looks at changes temporarily before stopping.
 
-        Fires a series of events only once, as defined by the backend. But step is
-        always ensured to stop.
+        Fires a series of events only once, as defined by the backend. But step
+        is always ensured to stop.
         """
         raise NotImplemented()
 
@@ -103,7 +109,8 @@ class BaseScanner(object):
 
     def _trigger(self, event_name, *args, **kwargs):
         """
-        Triggers a given event with the following *args and **kwargs parameters.
+        Triggers a given event with the following *args and **kwargs
+        parameters.
         """
         self.log('event: %s' % event_name, *args)
         for f in self._events[event_name]:
@@ -114,11 +121,13 @@ class BaseScanner(object):
         The default validator only accepts files ending in .py
         (and not prefixed by a period).
         """
-        return filepath.endswith('.py') and not os.path.basename(filepath).startswith('.')
+        return filepath.endswith('.py') and \
+            not os.path.basename(filepath).startswith('.')
 
     def not_repo(self, filepath):
         """
-        This excludes repository directories because they cause some exceptions occationally.
+        This excludes repository directories because they cause some exceptions
+        occationally.
         """
         filepath = set(filepath.replace('\\', '/').split('/'))
         for p in ('.git', '.hg', '.svn', '.cvs', '.bzr'):
@@ -145,10 +154,12 @@ class BaseScanner(object):
         Wrapper to call a list's method from one of the events
         """
         if event_name not in self.ALL_EVENTS:
-            raise TypeError('event_name ("%s") can only be one of the following: %s' % \
-                            (event_name, repr(self.ALL_EVENTS)))
+            raise TypeError(('event_name ("%s") can only be one of the '
+                             'following: %s') % (event_name,
+                                                 repr(self.ALL_EVENTS)))
         if not isinstance(func, collections.Callable):
-            raise TypeError('func must be callable to be added as an observer.')
+            raise TypeError(('func must be callable to be added as an '
+                             'observer.'))
         getattr(self._events[event_name], method)(func)
 
     def observe(self, event_name, func):
@@ -156,8 +167,8 @@ class BaseScanner(object):
         event_name := {'created', 'modified', 'deleted'}, list, tuple
 
         Attaches a function to run to a particular event. The function must be
-        unique to be removed cleanly. Alternatively, event_name can be an list/tuple
-        if any of the string possibilities to be added on multiple events.
+        unique to be removed cleanly. Alternatively, event_name can be an list/
+        tuple if any of the string possibilities to be added on multiple events
         """
         if isinstance(event_name, list) or isinstance(event_name, tuple):
             for name in event_name:
@@ -180,6 +191,7 @@ class BaseScanner(object):
         self.log(func.__name__, "dettached from", event_name)
         self._modify_event(event_name, 'remove', func)
 
+
 class PollingScanner(BaseScanner):
     """
     Implements the naive, but cross-platform file scanner.
@@ -201,7 +213,7 @@ class PollingScanner(BaseScanner):
         try:
             self._watched_files[filepath] = self._get_modified_time(filepath)
         except OSError:
-            return # didn't happen
+            return  # didn't happen
 
     def _unwatch_file(self, filepath, trigger_event=True):
         """
@@ -240,7 +252,7 @@ class PollingScanner(BaseScanner):
         self.log("No supported libraries found: using polling-method.")
         self._running = True
         self.trigger_init()
-        self._scan(trigger=False) # put after the trigger
+        self._scan(trigger=False)  # put after the trigger
         if self._warn:
             print("""
 You should install a third-party library so I don't eat CPU.
@@ -265,7 +277,8 @@ Use pip or easy_install and install one of those libraries above.
 
     def _scan(self, trigger=True):
         """
-        Walks through the directory to look for changes of the given file types.
+        Walks through the directory to look for changes of the given file
+        types.
         Returns True if changes occurred (False otherwise).
         Returns None if polling method isn't being used.
         """

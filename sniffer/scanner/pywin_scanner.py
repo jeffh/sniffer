@@ -10,12 +10,16 @@ from .base import BaseScanner
 import win32file
 import win32con
 import os
-import thread, Queue, time
+import thread
+import Queue
+import time
 
 ACTIONS = {}
-for i, name in enumerate(('Created', 'Deleted', 'Updated', 'Renamed from', 'Renamed to')):
+for i, name in enumerate(('Created', 'Deleted', 'Updated', 'Renamed from',
+                          'Renamed to')):
     ACTIONS[i] = name
 FILE_LIST_DIR = 0x0001
+
 
 class PyWinScanner(BaseScanner):
     """
@@ -25,7 +29,7 @@ class PyWinScanner(BaseScanner):
         super(PyWinScanner, self).__init__(*args, **kwargs)
         self._running = False
         self._q = Queue.Queue(1)
-        
+
     def _get_handle(self, path):
         return win32file.CreateFile(
             path,                                                 # filename
@@ -39,9 +43,9 @@ class PyWinScanner(BaseScanner):
 
     def _get_changes_blocking(self, handle):
         result = win32file.ReadDirectoryChangesW(
-            handle, # directory handle
-            1024, # buffer len (return size)
-            True, # watch recursively
+            handle,  # directory handle
+            1024,    # buffer len (return size)
+            True,    # watch recursively
             # notify filters
             win32con.FILE_NOTIFY_CHANGE_FILE_NAME | # create/rename/delete files
             #win32con.FILE_NOTIFY_CHANGE_DIR_NAME | # create/rename/delete dirs
@@ -49,8 +53,8 @@ class PyWinScanner(BaseScanner):
             #win32con.FILE_NOTIFY_CHANGE_ATTRIBUTES |
             #win32con.FILE_NOTIFY_CHANGE_SIZE |
             #win32con.FILE_NOTIFY_CHANGE_SECURITY,
-            None, # overlapped structure (?)
-            None  # completion routine (async only)
+            None,  # overlapped structure (?)
+            None   # completion routine (async only)
         )
         self._q.put(result)
 
@@ -78,7 +82,7 @@ class PyWinScanner(BaseScanner):
                     self.trigger_modified(fullpath)
                 elif action == 'Deleted':
                     self.trigger_deleted(fullpath)
-        
+
     def loop(self, sleep_time=None):
         self.log("Library of choice: PyWin32 (eww)")
         self.trigger_init()

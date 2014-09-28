@@ -1,8 +1,13 @@
+"""
+Scanner that relies on the pyinotify (Unix) Library
+
+It eliminates constant watching mechanisms
+"""
 from __future__ import absolute_import
 from .base import BaseScanner
-import platform
 
 import pyinotify
+
 
 class EventHandler(pyinotify.ProcessEvent):
     def __init__(self, scanner):
@@ -44,7 +49,7 @@ class PyINotifyScanner(BaseScanner):
         for path in self.paths:
             self._watcher.add_watch(path, mask, rec=True, auto_add=True,
                                     exclude_filter=self.is_valid_type)
-        
+
         return notifier
 
     def loop(self, sleep_time=None, callback=None):

@@ -21,6 +21,7 @@ The library to install is dependent on your operating system:
  - OSX: install MacFSEvents
 
 """
+
 from .metadata import *
 from .scanner import Scanner
 from .runner import Sniffer
