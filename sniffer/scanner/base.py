@@ -283,7 +283,7 @@ Use pip or easy_install and install one of those libraries above.
         Returns None if polling method isn't being used.
         """
         changed = False
-        files_seen = []
+        files_seen = set()
         os_path_join = os.path.join
         for path in self.paths:
             for root, dirs, files in os.walk(path):
@@ -291,11 +291,10 @@ Use pip or easy_install and install one of those libraries above.
                     fpath = os_path_join(root, f)
                     if not self.is_valid_type(fpath):
                         continue
-                    files_seen.append(fpath)
+                    files_seen.add(fpath)
                     if self._requires_new_modtime(fpath):
                         self._watch_file(fpath, trigger)
                         changed = True
-            files_seen = set(files_seen)
             for f in self._watched_files:
                 if f not in files_seen:
                     self._unwatch_file(f, trigger)
