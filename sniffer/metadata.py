@@ -12,8 +12,9 @@ __credits__ = [
     "Patrice Neff",
     "Andrew Lee",
     "Will Harris",
-    "Jonas Tingeborn"
+    "Jonas Tingeborn",
+    "Sebastian Wagner"
 ]
 
 __license__ = "MIT"
-__version__ = "0.3.2"
+__version__ = "0.3.3"
