@@ -82,15 +82,29 @@ except ImportError:
 
 class Broadcaster(object):
     def __init__(self, *emitters):
-        self.emitters = emitters
+        self.emitters = list(emitters)
 
     def success(self, sniffer):
-        for emit in self.emitters:
-            emit.success(sniffer)
+        for emit in list(self.emitters):
+            try:
+                emit.success(sniffer)
+            except Exception as e:
+                self.remove(emit, str(e))
 
     def failure(self, sniffer):
-        for emit in self.emitters:
-            emit.failure(sniffer)
+        for emit in list(self.emitters):
+            try:
+                emit.failure(sniffer)
+            except Exception as e:
+                self.remove(emit, str(e))
+
+    def remove(self, emitter, why):
+        self.emitters.remove(emitter)
+
+        print(why, file=sys.stderr)
+
+        if not self.emitters:
+            raise Exception('No emitters available')
 
 
 broadcaster = Broadcaster(
