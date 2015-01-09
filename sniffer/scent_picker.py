@@ -14,6 +14,7 @@ class ScentModule(object):
         self.filename = filename
         self.validators = []
         self.runners = []
+        self.runner_name = None
         for name in dir(self.mod):
             obj = getattr(self.mod, name)
             type = getattr(obj, 'scent_api_type', None)
@@ -23,7 +24,6 @@ class ScentModule(object):
                 self.validators.append(obj)
         self.runners = tuple(self.runners)
         self.validators = tuple(self.validators)
-        print(self.validators)
 
     def reload(self):
         try:
@@ -37,7 +37,7 @@ class ScentModule(object):
 
     def run(self, args):
         try:
-            for r in self.runners:
+            for r in self.get_runners():
                 if not r(*args):
                     return False
             return True
@@ -46,6 +46,17 @@ class ScentModule(object):
             traceback.print_exc()
             print()
             return False
+
+    def set_runner(self, runner_name):
+        self.runner_name = runner_name
+
+    def get_runners(self):
+        if self.runner_name:
+            return filter(
+                lambda f: f.__name__ == self.runner_name,
+                self.runners
+            )
+        return self.runners
 
     @property
     def fg_pass(self):

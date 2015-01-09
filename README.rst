@@ -59,16 +59,16 @@ your current working directory. Here's an example of what you can do so far::
 
   from sniffer.api import * # import the really small API
   import os, termstyle
-  
+
   # you can customize the pass/fail colors like this
   pass_fg_color = termstyle.green
   pass_bg_color = termstyle.bg_default
   fail_fg_color = termstyle.red
   fail_bg_color = termstyle.bg_default
-  
+
   # All lists in this variable will be under surveillance for changes.
   watch_paths = ['.', 'tests/']
-  
+
   # this gets invoked on every file that gets changed in the directory. Return
   # True to invoke any runnable functions, False otherwise.
   #
@@ -77,7 +77,7 @@ your current working directory. Here's an example of what you can do so far::
   @file_validator
   def py_files(filename):
       return filename.endswith('.py') and not os.path.basename(filename).startswith('.')
-  
+
   # This gets invoked for verification. This is ideal for running tests of some sort.
   # For anything you want to get constantly reloaded, do an import in the function.
   #
@@ -91,8 +91,44 @@ your current working directory. Here's an example of what you can do so far::
       import nose
       return nose.run(argv=list(args))
 
-And that's it. Nothing too fancy shmanshe. You can have multiple file_validator and
+And that's the basic case. Nothing too fancy shmanshe. You can have multiple file_validator and
 runnable decorators if you want.
+
+There is also support for selecting a runnable function by file validator.
+Useful if you want to run nose for Python files, mocha for JavaScript files,
+and csslint for CSS. Or any other combination you can come up with. For
+example::
+
+    # Here we instruct the 'python_tests' runnable to be kicked off
+    # when a .py file is changed
+    @select_runnable('python_tests')
+    @file_validator
+    def py_files(filename):
+        return filename.endswith('.py') and not os.path.basename(filename).startswith('.')
+
+
+    # Here we instruct the 'javascript_tests' runnable to be kicked off
+    # when a .js file is changed
+    @select_runnable('javascript_tests')
+    @file_validator
+    def js_files(filename):
+        return filename.endswith('.js') and not os.path.basename(filename).startswith('.')
+
+
+    @runnable
+    def python_tests(*args):
+        import nose
+        return nose.run(argv=list(args))
+
+
+    @runnable
+    def javascript_tests(*args):
+        command = "mocha tests/js-tests.js"
+        return call(command, shell=True) == 0
+
+This will run the nose for modifications to Python files and mocha when
+JavaScript files are changed.
+
 
 Other Uses
 ==========

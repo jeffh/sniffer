@@ -1,7 +1,7 @@
 import os
 import collections
 
-__all__ = ['get_files', 'file_validator', 'runnable']
+__all__ = ['get_files', 'file_validator', 'runnable', 'select_runnable']
 
 
 def get_files(exts=('py',), dirname=None):
@@ -32,6 +32,19 @@ class Wrapper(object):
 
     def __call__(self, *args, **kwargs):
         return self.func(*args, **kwargs)
+
+
+def select_runnable(runnable):
+    def decorator(func):
+        if (not isinstance(func, Wrapper) or
+            func.scent_api_type != 'file_validator'):
+            raise TypeError(
+                'select_runnable must be the outermost decorator on a '
+                'file_validator'
+            )
+        func.runnable = runnable
+        return func
+    return decorator
 
 
 def file_validator(func):

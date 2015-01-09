@@ -17,8 +17,9 @@ class BaseScanner(object):
     """
     ALL_EVENTS = ('created', 'modified', 'deleted', 'init')
 
-    def __init__(self, paths, logger=None, *args, **kwargs):
+    def __init__(self, paths, scent=None, logger=None, *args, **kwargs):
         self._validators = []
+        self._scent = scent
         self._paths = [os.path.abspath(p) for p in paths]
         self._logger = logger
         self._events = {}
@@ -124,7 +125,7 @@ class BaseScanner(object):
         return filepath.endswith('.py') and \
             not os.path.basename(filepath).startswith('.')
 
-    def not_repo(self, filepath):
+    def in_repo(self, filepath):
         """
         This excludes repository directories because they cause some exceptions
         occationally.
@@ -132,18 +133,30 @@ class BaseScanner(object):
         filepath = set(filepath.replace('\\', '/').split('/'))
         for p in ('.git', '.hg', '.svn', '.cvs', '.bzr'):
             if p in filepath:
-                return False
-        return True
+                return True
+        return False
 
     def is_valid_type(self, filepath):
         """
         Returns True if the given filepath is a valid watchable filetype.
         The filepath can be assumed to be a file (not a directory).
         """
-        if len(self._validators) == 0:
-            validators = [self.default_validator, self.not_repo]
-        else:
-            validators = self._validators + [self.not_repo]
+        if self.in_repo(filepath):
+            return False
+
+        validators = self._validators
+        if len(validators) == 0:
+            validators = [self.default_validator]
+
+        if any([hasattr(v, 'runnable') for v in self._validators]):
+            # case where we select the runnable function by the validator
+            for validator in validators:
+                if validator(filepath):
+                    if hasattr(validator, 'runnable'):
+                        self._scent.set_runner(validator.runnable)
+                        return True
+            return False
+
         for validator in validators:
             if not validator(filepath):
                 return False
