@@ -26,8 +26,3 @@ class ScentModuleTest(TestCase):
         self.assertTrue(scanner.is_valid_type('file.type2'))
         self.assertFalse(scanner.is_valid_type('file.negative'))
 
-
-
-
-
-

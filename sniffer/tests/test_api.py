@@ -13,6 +13,3 @@ class SelectRunnableDecorator(TestCase):
 
         self.assertEqual(validator.runnable, 'tagged')
 
-
-
-

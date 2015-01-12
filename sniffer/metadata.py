@@ -6,15 +6,17 @@ __all__ = [
 
 __author__ = "Jeff Hui"
 __author_email__ = "jeff@jeffhui.net"
-__copyright__ = "Copyright 2013, Jeff Hui"
+__copyright__ = "Copyright 2015, Jeff Hui"
 __credits__ = [
     "Jeff Hui",
     "Patrice Neff",
     "Andrew Lee",
     "Will Harris",
     "Jonas Tingeborn",
-    "Sebastian Wagner"
+    "Sebastian Wagner",
+    "Martin Griffin",
+    "Hansel Dunlop",
 ]
 
 __license__ = "MIT"
-__version__ = "0.3.3"
+__version__ = "0.3.4"
