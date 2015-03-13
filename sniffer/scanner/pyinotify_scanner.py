@@ -26,6 +26,16 @@ class EventHandler(pyinotify.ProcessEvent):
         if self._scanner.is_valid_type(event.pathname):
             self._scanner.trigger_modified(event.pathname)
 
+    def process_IN_MOVED_FROM(self, event):
+        if self._scanner.is_valid_type(event.pathname):
+            self._scanner.trigger_deleted(event.pathname)
+
+    def process_IN_MOVED_TO(self, event):
+        print('got moved to')
+        #self._process('modified', event.pathname)
+        if self._scanner.is_valid_type(event.pathname):
+            self._scanner.trigger_modified(event.pathname)
+
 
 class PyINotifyScanner(BaseScanner):
     """
@@ -45,7 +55,8 @@ class PyINotifyScanner(BaseScanner):
         handler = EventHandler(self)
 
         notifier = pyinotify.Notifier(self._watcher, handler)
-        mask = pyinotify.IN_DELETE | pyinotify.IN_CREATE | pyinotify.IN_MODIFY
+        mask = pyinotify.IN_DELETE | pyinotify.IN_CREATE | pyinotify.IN_MODIFY | \
+            pyinotify.IN_MOVED_TO | pyinotify.IN_MOVED_TO
         for path in self.paths:
             self._watcher.add_watch(path, mask, rec=True, auto_add=True,
                                     exclude_filter=self.is_valid_type)
