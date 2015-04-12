@@ -31,7 +31,6 @@ class EventHandler(pyinotify.ProcessEvent):
             self._scanner.trigger_deleted(event.pathname)
 
     def process_IN_MOVED_TO(self, event):
-        print('got moved to')
         #self._process('modified', event.pathname)
         if self._scanner.is_valid_type(event.pathname):
             self._scanner.trigger_modified(event.pathname)
