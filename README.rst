@@ -29,14 +29,14 @@ to the pure python implementation - manually walking through the file system to 
 changed [#]_. Although the default install of sniffer shares the same problem, installing a
 third-party library can help fix the problem. The library is dependent on your operating system:
 
- - If you use **Linux**, you'll need to install pyinotify_.
- - If you use **Windows**, you'll need to install pywin32_.
- - If you use **Mac OS X** 10.5+ (Leopard), you'll need to install MacFSEvents_.
+- If you use **Linux**, you'll need to install pyinotify_.
+- If you use **Windows**, you'll need to install pywin32_.
+- If you use **Mac OS X** 10.5+ (Leopard), you'll need to install MacFSEvents_.
 
 If you want support for other notification systems, you can install:
 
- - gntp_ for Growl_ support (Mac OS X).
- - py-notify_ for LibNotify_ support (Linux).
+- gntp_ for Growl_ support (Mac OS X).
+- py-notify_ for LibNotify_ support (Linux).
 
 .. [#] This has been resolved in subsequent autonose versions, using watchdog.
 .. _nose: http://code.google.com/p/python-nose/
@@ -52,10 +52,12 @@ If you want support for other notification systems, you can install:
 .. _LibNotify: http://developer-next.gnome.org/libnotify/
 
 Advanced Usage
-------
+--------------
 
 Don't want to run nose? You can do whatever you really want. Create a scent.py file in
-your current working directory. Here's an example of what you can do so far::
+your current working directory. Here's an example of what you can do so far:
+
+.. code-block:: python
 
   from sniffer.api import * # import the really small API
   import os, termstyle
@@ -97,7 +99,9 @@ runnable decorators if you want.
 There is also support for selecting a runnable function by file validator.
 Useful if you want to run nose for Python files, mocha for JavaScript files,
 and csslint for CSS. Or any other combination you can come up with. For
-example::
+example:
+
+.. code-block:: python
 
     # Here we instruct the 'python_tests' runnable to be kicked off
     # when a .py file is changed
