@@ -12,6 +12,13 @@ to pure-python solutions. However, sniffer will still work without any of those 
 .. _Python: http://python.org/
 .. _nosetest: http://code.google.com/p/python-nose/
 
+Looking for maintainers
+-----------------------
+
+I (@jeffh) am looking for a new maintainer to carry on this project to new heights. I'm currently leaving this project on maintance mode (respond to issues, merge pull requests), but I'm not dedicating most of my free time towards this project.
+
+Contact me on twitter (@jeffhui) or via email if you're interested in taking over the helm of this project.
+
 Usage
 -----
 
