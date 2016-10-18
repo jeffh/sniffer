@@ -59,11 +59,12 @@ class BaseScanner(object):
 
     def _get_modified_time(self, filepath):
         """
-        Returns the modified type for the given filepath or None on failure
+        Returns the modified time for the given filepath or 0 on failure
         """
-        if not os.path.isfile(filepath):
-            return None
-        return os.stat(filepath).st_mtime
+        try:
+            return os.stat(filepath).st_mtime
+        except OSError:
+            return 0  # this should be an older timestamp than any real file
 
     def loop(self, sleep_time=0.5, callback=None):
         """Runs a blocking loop."""
