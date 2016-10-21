@@ -6,7 +6,7 @@ __all__ = [
 
 __author__ = "Jeff Hui"
 __author_email__ = "jeff@jeffhui.net"
-__copyright__ = "Copyright 2015, Jeff Hui"
+__copyright__ = "Copyright 2016, Jeff Hui"
 __credits__ = [
     "Jeff Hui",
     "Patrice Neff",
@@ -16,7 +16,8 @@ __credits__ = [
     "Sebastian Wagner",
     "Martin Griffin",
     "Hansel Dunlop",
+    "Jace Browning",
 ]
 
 __license__ = "MIT"
-__version__ = "0.3.5"
+__version__ = "0.3.6"
