@@ -43,6 +43,7 @@ third-party library can help fix the problem. The library is dependent on your o
 If you want support for other notification systems, you can install:
 
 - gntp_ for Growl_ support (Mac OS X).
+- osxnotify_ and libosxnotify_ for native OS X notifications (Max OS X 10.9.4 and newer)
 - py-notify_ for LibNotify_ support (Linux).
 
 .. [#] This has been resolved in subsequent autonose versions, using watchdog.
@@ -57,6 +58,8 @@ If you want support for other notification systems, you can install:
 .. _Growl: http://growl.info
 .. _py-notify: http://home.gna.org/py-notify
 .. _LibNotify: http://developer-next.gnome.org/libnotify/
+.. _osxnotify: https://github.com/tomekwojcik/osxnotify-python
+.. _libosxnotify: https://github.com/tomekwojcik/libosxnotify
 
 Advanced Usage
 --------------
