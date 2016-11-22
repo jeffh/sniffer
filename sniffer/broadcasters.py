@@ -80,6 +80,29 @@ except ImportError:
     GrowlEmitter = NullEmitter
 
 
+try:
+    import osxnotify
+
+    class OSXNotifyEmitter(object):
+        """Emits exit status info to osxnotify."""
+        def success(self, sniffer):
+            osxnotify.notify(
+                title="Sniffer",
+                subtitle="Passes",
+                informative_text="In good standing!"
+            )
+
+        def failure(self, sniffer):
+            osxnotify.notify(
+                title="Sniffer",
+                subtitle="Failures",
+                informative_text="Back to wrok!"
+            )
+
+except ImportError:
+    OSXNotifyEmitter = NullEmitter
+
+
 class Broadcaster(object):
     def __init__(self, *emitters):
         self.emitters = list(emitters)
@@ -110,5 +133,6 @@ class Broadcaster(object):
 broadcaster = Broadcaster(
     PrinterEmitter(),
     GrowlEmitter(),
+    OSXNotifyEmitter(),
     PynotifyEmitter(),
 )
