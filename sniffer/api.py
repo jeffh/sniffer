@@ -1,5 +1,5 @@
 import os
-import collections
+import collections.abc
 
 __all__ = ['get_files', 'file_validator', 'runnable', 'select_runnable']
 
@@ -24,7 +24,7 @@ class Wrapper(object):
         self.__name__ = func.__name__
         self.__doc__ = func.__doc__
 
-        if not isinstance(func, collections.Callable):
+        if not isinstance(func, collections.abc.Callable):
             raise TypeError("Given object is not callable.")
 
     def __repr__(self):

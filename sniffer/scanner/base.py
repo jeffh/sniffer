@@ -8,7 +8,7 @@ files.
 """
 import os
 import time
-import collections
+import collections.abc
 
 
 class BaseScanner(object):
@@ -28,7 +28,7 @@ class BaseScanner(object):
         self._watched_files = {}
 
     def add_validator(self, func):
-        if not isinstance(func, collections.Callable):
+        if not isinstance(func, collections.abc.Callable):
             raise TypeError(("Param should return boolean and accept a "
                              "filename string"))
         self._validators.append(func)
@@ -171,7 +171,7 @@ class BaseScanner(object):
             raise TypeError(('event_name ("%s") can only be one of the '
                              'following: %s') % (event_name,
                                                  repr(self.ALL_EVENTS)))
-        if not isinstance(func, collections.Callable):
+        if not isinstance(func, collections.abc.Callable):
             raise TypeError(('func must be callable to be added as an '
                              'observer.'))
         getattr(self._events[event_name], method)(func)
@@ -279,7 +279,7 @@ Use pip or easy_install and install one of those libraries above.
 """)
         while self._running:
             self._scan()
-            if isinstance(callback, collections.Callable):
+            if isinstance(callback, collections.abc.Callable):
                 callback()
             time.sleep(sleep_time)
 
