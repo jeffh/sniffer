@@ -1,9 +1,10 @@
+.PHONY: clear upload test_upload
 
 clear:
 	find . | grep --regexp '.pyc$$' | xargs rm
 	rm -rf build
 
-upload: pypi
+upload:
+	python setup.py sdist bdist_wheel
+	twine upload dist/*
 
-pypi:
-	python setup.py register sdist bdist_wheel upload -r pypi
