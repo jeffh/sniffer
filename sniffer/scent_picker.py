@@ -52,11 +52,11 @@ class ScentModule(object):
 
     def get_runners(self):
         if self.runner_name:
-            return filter(
+            return tuple(filter(
                 lambda f: f.__name__ == self.runner_name,
                 self.runners
-            )
-        return self.runners
+            ))
+        return tuple(self.runners)
 
     @property
     def fg_pass(self):
