@@ -1,5 +1,13 @@
 ChangeLog
 =========
+0.4.1
+-----
+ - Fix warnings for python3
+
+0.4.0
+-----
+ - Add osxnotify for native macos notifications
+
 0.3.2
 -----
  - Fixed pywin support for file system watching
