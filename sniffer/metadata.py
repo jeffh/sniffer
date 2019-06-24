@@ -17,7 +17,8 @@ __credits__ = [
     "Martin Griffin",
     "Hansel Dunlop",
     "Jace Browning",
+    "Sergey K",
 ]
 
 __license__ = "MIT"
-__version__ = "0.4.0"
+__version__ = "0.4.1"
